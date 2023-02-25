@@ -23,7 +23,7 @@
                 <ul>
                     <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
                     <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
-                    <router-link v-if="user" class="link" :to="{ name: 'newpost' }">Create Post</router-link>
+                    <router-link class="link" :to="{ name: 'newpost' }">Create Post</router-link>
                     <router-link v-if="!user" class="link" :to="{ name: 'Login' }"
                     >Login / Register</router-link>
 
@@ -59,6 +59,12 @@ export default {
           datenow: ""
         }
     },
+
+    computed: {
+        user(){
+            return this.$store.state.user;
+        },  
+    },
     methods: {
         getDate(){
             const today = new Date();
@@ -66,8 +72,10 @@ export default {
             
         
         }
-    }
+    },
+    
 }
+  
 </script>
 
 <style lang="scss" scoped>

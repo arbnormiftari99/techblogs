@@ -29,10 +29,11 @@
     </div>
     </div>
 </div>
+
 </template>
 
 <script>
-import Modal from '../components/Modal';
+import Modal from "../components/Modal";
 import adminIcon from "../assets/Icons/user-crown-light.svg";
 export default {
            
