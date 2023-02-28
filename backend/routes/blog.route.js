@@ -43,8 +43,7 @@ blogRoute.route('/:id').put((req, res, next) => {
             if (error) {
                 return next(error)
             } else {
-                res.json(data)
-                console.log('Blog successfully updated!')
+                res.json(Object.assign({}, data._doc, req.body))
             }
         },
     )
