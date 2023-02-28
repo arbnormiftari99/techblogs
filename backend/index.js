@@ -10,7 +10,7 @@ require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 4000
-console.log(process.env.PORT+"-the port")
+console.log(process.env.PORT + "-the port")
 //mongoDB connection
 mongoose
   .connect(process.env.CONNECTION_STRING)
@@ -25,27 +25,27 @@ mongoose
 so that every request that hits the endpoints,
  their request bodies can be converted to json*/
 
- //if it doesnt work switch to bodyparser
+//if it doesnt work switch to bodyparser
 app.use(express.json())
 app.use(
-    express.urlencoded({
-      extended: false,
-    }),
+  express.urlencoded({
+    extended: false,
+  }),
 )
 app.use(cors());
 
 app.use('/api/blogs', blogRoute);
 
 app.listen(
-    port,
-    () => console.log(`server running on http://localhost:${port}`)
+  port,
+  () => console.log(`server running on http://localhost:${port}`)
 );
 
 app.use((req, res, next) => {
-    next(createError(404))
+  next(createError(404))
 })
-  
-  // error handler
+
+// error handler
 app.use((err, req, res) => {
   console.error(err.message)
   if (!err.statusCode) err.statusCode = 500

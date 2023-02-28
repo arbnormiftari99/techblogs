@@ -1,7 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
 import dotenv from 'dotenv';
-dotenv.config({path:'../../.env'})
+dotenv.config({ path: '../../.env' })
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_API_KEY,
   authDomain: process.env.VUE_APP_AUTH_DOMAIN,
@@ -12,11 +12,11 @@ const firebaseConfig = {
   measurementId: process.env.VUE_APP_MEASUREMENT_ID
 };
 
-console.log( process.env.VUE_APP_API_KEY)
+console.log(process.env.VUE_APP_API_KEY)
 
 
-  const firebaseApp = firebase.initializeApp(firebaseConfig);
-  const timestamp = firebase.firestore.FieldValue.serverTimestamp;
-  
-  export { timestamp };
-  export default firebaseApp.firestore();
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+const timestamp = firebase.firestore.FieldValue.serverTimestamp;
+
+export { timestamp };
+export default firebaseApp.firestore();

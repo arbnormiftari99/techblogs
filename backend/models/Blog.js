@@ -3,13 +3,16 @@ const Schema = mongoose.Schema;
 
 const blogSchema = new Schema(
     {
-        title:{
+        title: {
             type: String
         },
-        dateAdded:{
+        dateAdded: {
             type: Date
         },
-        textContent:{
+        textContent: {
+            type: String
+        },
+        category: {
             type: String
         },
         img:
@@ -18,10 +21,10 @@ const blogSchema = new Schema(
             data: Buffer,
             contentType: String
         }
-        
-    },{
-        collection:'Blogs'
-    }
+
+    }, {
+    collection: 'Blogs'
+}
 )
 
 
