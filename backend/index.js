@@ -36,13 +36,6 @@ app.use(cors());
 
 app.use('/api/blogs', blogRoute);
 
-// app.get('/blogs',(req,res) => {
-//     res.status(200).send({
-//         hi:'hello',
-//         size:'large'
-//     })
-// })
-
 app.listen(
     port,
     () => console.log(`server running on http://localhost:${port}`)
