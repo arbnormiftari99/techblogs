@@ -1,6 +1,6 @@
 const express = require('express');
 const BlogModel = require('../models/Blog');
-
+const TrackerModel = require('../models/Tracker');
 const blogRoute = express.Router();
 
 blogRoute.route('/').get((req, res, next) => {
@@ -18,6 +18,12 @@ blogRoute.route('/').post((req, res, next) => {
         if (error) {
             return next(error)
         } else {
+            TrackerModel.create({
+                operationType: "CREATE",
+                dateAdded: new Date(Date.now()),
+                operationDescription:
+                    `Blog with content:${JSON.stringify(req.body)} was added`
+            })
             res.json(data)
         }
     })
@@ -43,6 +49,13 @@ blogRoute.route('/:id').put((req, res, next) => {
             if (error) {
                 return next(error)
             } else {
+                TrackerModel.create({
+                    operationType: "EDIT",
+                    dateAdded: new Date(Date.now()),
+                    operationDescription:
+                        `Blog with content:
+                        ${JSON.stringify(Object.assign({}, req.params.id, req.body))} was edited`
+                })
                 res.json(Object.assign({}, data._doc, req.body))
             }
         },
@@ -54,6 +67,14 @@ blogRoute.route('/:id').delete((req, res, next) => {
         if (error) {
             return next(error)
         } else {
+
+            TrackerModel.create({
+                operationType: "DELETE",
+                dateAdded: new Date(Date.now()),
+                operationDescription:
+                    `Blog with id:
+                    ${req.params.id} was deleted`
+            })
             res.status(200).json({
                 msg: data,
             })
