@@ -3,7 +3,7 @@ const BlogModel = require('../models/Blog');
 const TrackerModel = require('../models/Tracker');
 const blogRoute = express.Router();
 
-blogRoute.route('/').get((req, res, next) => {
+blogRoute.route('/').get(async (req, res, next) => {
     BlogModel.find((error, data) => {
         if (error) {
             return next(error)
@@ -13,7 +13,7 @@ blogRoute.route('/').get((req, res, next) => {
     })
 })
 
-blogRoute.route('/').post((req, res, next) => {
+blogRoute.route('/').post(async (req, res, next) => {
     BlogModel.create(req.body, (error, data) => {
         if (error) {
             return next(error)
@@ -29,7 +29,7 @@ blogRoute.route('/').post((req, res, next) => {
     })
 })
 
-blogRoute.route('/:id').get((req, res, next) => {
+blogRoute.route('/:id').get(async (req, res, next) => {
     BlogModel.findById(req.params.id, (error, data) => {
         if (error) {
             return next(error)
@@ -39,7 +39,7 @@ blogRoute.route('/:id').get((req, res, next) => {
     })
 })
 
-blogRoute.route('/:id').put((req, res, next) => {
+blogRoute.route('/:id').put(async (req, res, next) => {
     BlogModel.findByIdAndUpdate(
         req.params.id,
         {
@@ -62,7 +62,7 @@ blogRoute.route('/:id').put((req, res, next) => {
     )
 })
 
-blogRoute.route('/:id').delete((req, res, next) => {
+blogRoute.route('/:id').delete(async (req, res, next) => {
     BlogModel.findByIdAndRemove(req.params.id, (error, data) => {
         if (error) {
             return next(error)

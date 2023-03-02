@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import firebase from "firebase/app";
 import "firebase/auth";
-import db from "../firebase/firebaseInit";
+import db from "../../firebaseInit";
 
 Vue.use(Vuex)
 

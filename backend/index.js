@@ -5,6 +5,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 // const bodyParser = require('body-parser');
 const createError = require('http-errors');
+const userRoute = require('./routes/user.route');
 require('dotenv').config();
 
 
@@ -35,6 +36,7 @@ app.use(
 app.use(cors());
 
 app.use('/api/blogs', blogRoute);
+app.use('/api',userRoute);
 
 app.listen(
   port,
@@ -52,18 +54,3 @@ app.use((err, req, res) => {
   res.status(err.statusCode).send(err.message)
 })
 
-
-
-// app.post('/blogs/:id',(req,res) => {
-//     const { id } = req.params;
-//     const { body } = req.body;
-//     if(!body){
-//         res.status(418).send({
-//         message:'missing body'
-//         })
-//     }
-//     res.status(200).send({
-//         id: id,
-//         body: body
-//     })
-// })
