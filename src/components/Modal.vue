@@ -1,17 +1,17 @@
 <template>
-<div class="modal">
-    <div class="modal-content">
-        <p>{{ this.popupMessage }}</p>
-        <button @click="closePopup">Close</button>
+    <div class="modal">
+        <div class="modal-content">
+            <p>{{ this.popupMessage }}</p>
+            <button @click="closePopup">Close</button>
+        </div>
     </div>
-</div>
 </template>
 
 <script>
 export default {
     props: ["popupMessage"],
     methods: {
-        closePopup(){
+        closePopup() {
             this.$emit("close-popup");
         },
 
@@ -21,8 +21,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-.modal{
+.modal {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -32,8 +31,8 @@ export default {
     height: 100%;
     top: 0;
     background-color: rgba(0, 0, 0, 0.7);
-    
-    .modal-content{
+
+    .modal-content {
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -42,15 +41,15 @@ export default {
         padding: 40px 30px;
         background-color: #fff;
 
-        p{
+        p {
             text-align: center;
 
         }
-        button{
+
+        button {
             align-self: center;
 
         }
     }
 }
-
 </style>

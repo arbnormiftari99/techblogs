@@ -1,7 +1,7 @@
 <template>
-  <div class="loading">
-    <span></span>
-  </div>
+    <div class="loading">
+        <span></span>
+    </div>
 </template>
 
 <script>
@@ -12,7 +12,7 @@ export default {
 </script>
 
 <style lang="scss">
-.loading{
+.loading {
     top: 0;
     z-index: 101;
     height: 100%;
@@ -22,12 +22,14 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+
     @keyframes spin {
-        to{
+        to {
             transform: rotateZ(360deg);
         }
     }
-    span{
+
+    span {
         display: block;
         width: 60px;
         height: 60px;
