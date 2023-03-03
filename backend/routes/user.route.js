@@ -17,20 +17,20 @@ const userRoute = express.Router();
 // })
 
 userRoute.route('/register').post(async (req, res, next) => {
-    try{
-    const firebaseAuth = await firebase.auth();
-    const createUser = await firebaseAuth.createUserWithEmailAndPassword(req.body.email, req.body.password);
-    const result = await createUser;
-    const dataBase = db.collection("users").doc(result.user.uid);
-    await dataBase.set({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        username: req.body.username,
-        email: req.body.email,
-        role:'USER'
-      });
+    try {
+        const firebaseAuth = await firebase.auth();
+        const createUser = await firebaseAuth.createUserWithEmailAndPassword(req.body.email, req.body.password);
+        const result = await createUser;
+        const dataBase = db.collection("users").doc(result.user.uid);
+        await dataBase.set({
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            username: req.body.username,
+            email: req.body.email,
+            role: 'USER'
+        });
     }
-    catch(err){
+    catch (err) {
         console.log(err)
     }
     res.send({ msg: 'it reached', ...req.body })
