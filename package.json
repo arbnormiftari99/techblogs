@@ -6,7 +6,7 @@
     "frontend": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "backend":"node ./backend/"
+    "backend": "node ./backend/"
   },
   "dependencies": {
     "body-parser": "^1.19.2",

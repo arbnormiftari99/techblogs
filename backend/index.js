@@ -1,5 +1,5 @@
 const blogRoute = require('./routes/blog.route');
-
+const trackerRoute = require('./routes/tracker.route')
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -13,6 +13,7 @@ const app = express();
 const port = process.env.PORT || 4000
 console.log(process.env.PORT + "-the port")
 //mongoDB connection
+//lidhja me db
 mongoose
   .connect(process.env.CONNECTION_STRING)
   .then((x) => {
@@ -35,8 +36,9 @@ app.use(
 )
 app.use(cors());
 
+app.use('/api/tracker', trackerRoute);
 app.use('/api/blogs', blogRoute);
-app.use('/api',userRoute);
+app.use('/api', userRoute);
 
 app.listen(
   port,
