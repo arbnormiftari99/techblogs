@@ -21,4 +21,15 @@ trackerRoute.route('/:id').get(async (req, res, next) => {
     })
 })
 
-module.exports = trackerRoute;
+const addTrackerRecord = (userId,operationType,operationDescription,entityType)=>{
+    TrackerModel.create({
+        userId:userId,
+        operationType: operationType,
+        operationDescription: operationDescription,
+        entityType:entityType,
+        dateAdded: new Date(Date.now()),
+        
+    })
+}
+
+module.exports = {trackerRoute, addTrackerRecord};

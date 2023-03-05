@@ -1,5 +1,5 @@
 const blogRoute = require('./routes/blog.route');
-const trackerRoute = require('./routes/tracker.route')
+const trackerRoute = require('./routes/tracker.route').trackerRoute;
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');

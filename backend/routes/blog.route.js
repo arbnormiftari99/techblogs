@@ -1,6 +1,6 @@
 const express = require('express');
 const BlogModel = require('../models/Blog');
-const TrackerModel = require('../models/Tracker');
+const addTrackerRecord = require('./tracker.route').trackerRoute;
 const blogRoute = express.Router();
 
 blogRoute.route('/').get(async (req, res, next) => {

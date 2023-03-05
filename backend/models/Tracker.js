@@ -3,6 +3,9 @@ const Schema = mongoose.Schema;
 
 const trackerSchema = new Schema(
     {
+        userId: {
+            type: String
+        },
         operationType: {
             type: String
         },
@@ -10,6 +13,9 @@ const trackerSchema = new Schema(
             type: Date
         },
         operationDescription: {
+            type: String
+        },
+        entityType: {
             type: String
         },
     }, {
