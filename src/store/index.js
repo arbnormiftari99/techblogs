@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import firebase from "firebase/app";
 import "firebase/auth";
-import db from "../../firebaseInit";
+import firebaseDB from "../../firebaseInit";
 
 Vue.use(Vuex)
 
@@ -59,13 +59,13 @@ export default new Vuex.Store({
  
   actions: {
     async getCurrentUser({commit}){
-      const dataBase = await db.collection("users").doc(firebase.auth().currentUser.uid);
+      const dataBase = await firebaseDB.collection("users").doc(firebase.auth().currentUser.uid);
       const dbResult = await dataBase.get();
       commit("setProfileInfo", dbResult);
       commit("setProfileInitials");
     },
     async updateUserSettings({commit, state}){
-      const dataBase = await db.collection('users').doc(state.profileId);
+      const dataBase = await firebaseDB.collection('users').doc(state.profileId);
       await dataBase.update({
         firstName: state.profileFirstName,
         lastName: state.profileLastName,

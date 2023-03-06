@@ -40,9 +40,13 @@
 import email from "../assets/Icons/envelope-regular.svg";
 import password from "../assets/Icons/lock-alt-solid.svg";
 import user from "../assets/Icons/user-alt-light.svg";
+import 'firebase/firestore';
+
+
+
 import firebase from "firebase/app";
 import "firebase/auth";
-import db from "../../firebaseInit";
+import firebaseDB from "../../firebaseInit";
 export default {
   name: "Register",
 
@@ -74,7 +78,7 @@ export default {
         const firebaseAuth = await firebase.auth();
         const createUser = await firebaseAuth.createUserWithEmailAndPassword(this.email, this.password);
         const result = await createUser;
-        const dataBase = db.collection("users").doc(result.user.uid);
+        const dataBase = firebaseDB.collection("users").doc(result.user.uid);
         // this.$router.push({ name: "Home" }); 
         await dataBase.set({
           firstName: this.firstName,
