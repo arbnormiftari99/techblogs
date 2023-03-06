@@ -55,6 +55,11 @@ export default {
           blogHTML: 'This is a filler Title!',
           blogCoverPhoto: 'designed-for-everyone',          
         },
+        {
+          title: 'This is a filler Titl2!',
+          blogHTML: 'This is a filler Title!',
+          blogCoverPhoto: 'company',
+        }
       ],
    
       };
