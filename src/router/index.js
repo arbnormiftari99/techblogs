@@ -8,6 +8,12 @@ import ForgotPassword from "../views/ForgotPassword.vue";
 import Profile from "../views/Profile.vue";
 import Admin from "../views/Admin.vue";
 import CreatePost from "../views/CreatePost.vue";
+import BlogPreview from "../views/BlogPreview.vue";
+import ViewBlog from "../views/ViewBlog.vue";
+
+
+
+
 
 
 
@@ -19,7 +25,8 @@ const routes = [
     name: "Home",
     component: Home,
     meta: {
-      title: "Home"
+      title: "Home",
+    
     }
   },
   {
@@ -27,7 +34,8 @@ const routes = [
     name: "Blogs",
     component: Blogs,
     meta: {
-      title: "Blogs"
+      title: "Blogs",
+   
     }
   },
   {
@@ -78,6 +86,22 @@ const routes = [
       title: "Create Post"
     }
   },
+  {
+    path: "/post-preview",
+    name: "BlogPreview",
+    component: BlogPreview,
+    meta: {
+      title: "Post Preview"
+    }
+  },
+  {
+    path: "/view-blog",
+    name: "ViewBlog",
+    component: ViewBlog,
+    meta: {
+      title: "View Blog"
+    }
+  },
   
 ];
 
@@ -86,6 +110,8 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
+
+
 
 router.beforeEach((to, from, next) => {
   document.title = `${to.meta.title}`;
