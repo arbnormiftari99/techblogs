@@ -1,78 +1,105 @@
 <template>
-  <div class="form-wrap">
-    <form class="login">
-        <p class="login-register">
-            Don't have an account?
-            <router-link class="router-link" :to="{name: 'Register'}">Register</router-link>
-        </p>
-        <h2>Login to TechBlogs</h2>
-        <div class="inputs">
-            <div class="input">
-               <input type="text" placeholder="Write your Email" v-model="email">
-               <email class="icon" />
+    <div class="form-wrap">
+        <form class="login">
+            <p class="login-register">
+                Don't have an account?
+                <router-link class="router-link" :to="{ name: 'Register' }">Register</router-link>
+            </p>
+            <h2>Login to TechBlogs</h2>
+            <div class="inputs">
+                <div class="input">
+                    <input type="text" placeholder="Write your Email" v-model="email">
+                    <email class="icon" />
+                </div>
+                <div class="input">
+                    <input type="password" placeholder="Write your Password" v-model="password">
+                    <password class="icon" />
+
+                </div>
+                <div v-show="error" class="error">{{ this.errorMsg }}</div>
             </div>
-            <div class="input">
-               <input type="password" placeholder="Write your Password" v-model="password">
-               <password class="icon" />
-               
-            </div>
-            <div v-show="error" class="error">{{ this.errorMsg }}</div>
-        </div>
-        <router-link class="forgot-password" :to="{ name: 'ForgotPassword' }">Forgot Password?</router-link>
-        <button class="signin" @click.prevent="signIn">Sign in</button>
-        <div class="angle"></div>
-    </form>
-    <div class="background"></div>
-  </div>
+            <router-link class="forgot-password" :to="{ name: 'ForgotPassword' }">Forgot Password?</router-link>
+            <button class="signin" @click.prevent="signIn">Sign in</button>
+            <div class="angle"></div>
+        </form>
+        <div class="background"></div>
+    </div>
 </template>
 
 <script>
 import email from "../assets/Icons/envelope-regular.svg";
 import password from "../assets/Icons/lock-alt-solid.svg";
-import firebase from "firebase/app";
+// import firebase from "firebase/app";
+import { mapActions } from 'vuex';
 import "firebase/auth";
 
 export default {
     name: "Login",
-components: {
-    email,
-    password,
+    components: {
+        email,
+        password,
     },
-data(){
-    return {
-        email: null,
-        password: null,
-        error: null,
-        errorMsg: ""
+    data() {
+        return {
+            email: null,
+            password: null,
+            error: null,
+            errorMsg: ""
+        }
+    },
+
+    methods: {
+        ...mapActions(['LogInUser']),
+        signIn() {
+            this.LogInUser({ email: this.email, password: this.password })
+                .then(() => {
+                    // const userString = localStorage.getItem('user');
+                    // const user = JSON.parse(userString);
+                    // this.GetUser({
+                    //     userId: user.userId,
+                    //     token: user.token
+                    // }).then(() => {
+                    //     console.log('it went good')
+                    // }).catch((err) => {
+                    //     this.error = true;
+                    //     this.errorMsg = err.message;
+                    // })
+                    // console.log(user)
+                    this.$router.push({ name: 'Home' });
+                    this.error = false;
+                    this.errorMsg = '';
+                    console.log('logged in')
+                })
+                .catch((err) => {
+                    this.error = true;
+                    this.errorMsg = err.message;
+                });
+        }
+        // signIn() {
+        //     firebase
+        //         .auth().signInWithEmailAndPassword(this.email, this.password)
+        //         .then(() => {
+        //             this.$router.push({ name: "Home" });
+        //             this.error = false;
+        //             this.errorMsg = "";
+        //             // console.log(firebase.auth().currentUser.uid);
+        //         })
+        //         .catch(err => {
+        //             this.error = true;
+        //             this.errorMsg = err.message;
+
+        //         })
+
+
+
+        // }
     }
-},
-
-methods: {
-    signIn(){
-        firebase
-        .auth().signInWithEmailAndPassword(this.email, this.password)
-        .then(() => {
-            this.$router.push({name: "Home"});
-            this.error = false;
-            this.errorMsg = "";
-            // console.log(firebase.auth().currentUser.uid);
-        })
-        .catch(err => {
-            this.error = true;
-            this.errorMsg = err.message;
-        
-        })
-
-
-        
-    }
-}
 
 };
 </script>
 
 <style lang="scss">
-.form-wrap{
+.form-wrap {
     overflow: hidden;
     display: flex;
     height: 100vh;
@@ -80,16 +107,17 @@ methods: {
     align-self: center;
     margin: 0 auto;
     width: 90%;
-    @media(min-width: 900px){
+
+    @media(min-width: 900px) {
         width: 100%;
 
     }
 
-    .signin:hover{
+    .signin:hover {
         background-color: green;
     }
-    
-    .login-register{
+
+    .login-register {
         margin-bottom: 32px;
 
         .router-link {
@@ -98,7 +126,7 @@ methods: {
         }
     }
 
-    form{
+    form {
         padding: 0 10px;
         position: relative;
         display: flex;
@@ -106,26 +134,28 @@ methods: {
         justify-content: center;
         align-items: center;
         flex: 1;
-        @media(min-width: 900px){
-            padding: 0 50px; 
+
+        @media(min-width: 900px) {
+            padding: 0 50px;
 
         }
 
-        h2{
+        h2 {
             text-align: center;
             font-size: 32px;
             color: #303030;
             margin-bottom: 40px;
-            @media(min-width: 900px){
+
+            @media(min-width: 900px) {
                 font-size: 40px;
             }
         }
 
-        .inputs{
+        .inputs {
             width: 100%;
             max-width: 350px;
 
-            .input{
+            .input {
                 position: relative;
                 display: flex;
                 justify-content: center;
@@ -143,19 +173,19 @@ methods: {
                         outline: none;
                     }
 
-                 }
+                }
 
-                 .icon{
+                .icon {
                     width: 12px;
                     position: absolute;
                     left: 6px;
 
-                 }
-            
+                }
+
             }
         }
 
-        .forgot-password{
+        .forgot-password {
             text-decoration: none;
             color: #000;
             cursor: pointer;
@@ -164,13 +194,13 @@ methods: {
             border-bottom: 1px solid transparent;
             transition: 0.5s ease all;
 
-            &:hover{
+            &:hover {
                 border-color: #303030;
 
             }
         }
 
-        .angle{
+        .angle {
             display: none;
             position: absolute;
             background-color: #fff;
@@ -178,7 +208,8 @@ methods: {
             width: 60px;
             right: -47px;
             height: 101%;
-            @media(min-width: 900px){
+
+            @media(min-width: 900px) {
                 display: initial;
 
             }
@@ -193,12 +224,13 @@ methods: {
         background-image: url("../assets/tech.png");
         width: 100%;
         height: 100%;
-        @media(min-width: 900px){
+
+        @media(min-width: 900px) {
             display: initial;
 
         }
-        
-        
+
+
     }
 }
 </style>

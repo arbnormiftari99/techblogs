@@ -12,7 +12,10 @@ const blogSchema = new Schema(
         textContent: {
             type: String
         },
-        category: {
+        username: {
+            type: String
+        },
+        userId:{
             type: String
         },
         img:
@@ -21,7 +24,6 @@ const blogSchema = new Schema(
             data: Buffer,
             contentType: String
         }
-
     }, {
     collection: 'Blogs'
 }

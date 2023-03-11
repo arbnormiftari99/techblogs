@@ -8,10 +8,10 @@
                 <ul v-bind="navigationDisabled" v-show="!mobile">
                     <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
                     <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
-                    <router-link class="link" :to="{ name: 'Blogs' }">Create a Post</router-link>
-                    <router-link v-if="!user" class="link" :to="{ name: 'Login' }">Login/Register</router-link>
+                    <router-link v-if="isLoggedIn" class="link" :to="{ name: 'CreatePost' }">Create a Post</router-link>
+                    <router-link v-if="!isLoggedIn" class="link" :to="{ name: 'Login' }">Login/Register</router-link>
                 </ul>
-                <div v-if="user" @click="profileMenuToggle" class="profile" ref="profile">
+                <div v-if="isLoggedIn" @click="profileMenuToggle" class="profile" ref="profile">
                     <span>{{ this.$store.state.profileInitials }}</span>
                     <div v-show="profileMenu" class="profile-menu">
                         <div class="info">
@@ -29,8 +29,8 @@
                                     <p>Profile</p>
                                 </router-link>
                             </div>
-                            <div class="option">
-                                <router-link class="option" :to="{ name: 'Admin' }">
+                            <div v-if="isAdmin" class="option">
+                                <router-link v-if="isAdmin" class="option" :to="{ name: 'Admin' }">
                                     <adminIcon class="icon" />
                                     <p>Admin</p>
                                 </router-link>
@@ -49,8 +49,8 @@
             <ul v-bind="navigationDisabled" class="mobile-nav" v-show="mobileNav">
                 <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
                 <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
-                <router-link class="link" to="#">Create a Post</router-link>
-                <router-link v-if="!user" class="link" :to="{ name: 'Login' }">Login/Register</router-link>
+                <router-link v-if="isLoggedIn" class="link" :to="{ name: 'Blogs' }">Create a Post</router-link>
+                <router-link v-if="!isLoggedIn" class="link" :to="{ name: 'create-post' }">Login/Register</router-link>
 
             </ul>
         </transition>
@@ -62,7 +62,7 @@ import menuIcon from "../assets/Icons/bars-regular.svg"
 import userIcon from "../assets/Icons/user-alt-light.svg"
 import adminIcon from "../assets/Icons/user-crown-light.svg"
 import signOutIcon from "../assets/Icons/sign-out-alt-regular.svg"
-import firebase from "firebase/app";
+// import firebase from "firebase/app";
 import "firebase/auth";
 
 export default {
@@ -108,9 +108,11 @@ export default {
             this.mobileNav = !this.mobileNav;
         },
         signOut() {
-            firebase.auth().signOut();
-            // this.$router.push({ name: 'Login'});
-            window.location.reload();
+            // firebase.auth().signOut();
+            localStorage.clear();
+            this.$store.commit("signOut")
+            this.$router.push({ name: 'Blogs'});
+            // window.location.reload();
 
         }
 
@@ -121,6 +123,14 @@ export default {
     computed: {
         user() {
             return this.$store.state.user;
+        },
+        isLoggedIn() {
+            return this.$store.state.isLoggedIn;
+        },
+        isAdmin(){
+            const user = JSON.parse(localStorage.getItem('user'));
+            console.log(user.role === 'ADMIN')
+            return user.role === 'ADMIN'
         }
     }
 };
@@ -327,4 +337,5 @@ header {
     .mobile-nav-leave-to {
         transform: translateX(-250px);
     }
-}</style>
+}
+</style>

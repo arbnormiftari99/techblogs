@@ -3,17 +3,17 @@
     <div class="app">
       <Navigation v-if="!navigationDisabled" />
       <router-view />
-    <Footer v-if="!navigationDisabled" />
- </div>
-</div>
-
+      <Footer v-if="!navigationDisabled" />
+    </div>
+  </div>
 </template>
 
 <script>
 import Navigation from "./components/Navigation.vue";
 import Footer from "./components/Footer.vue";
-import firebase from "firebase/app";
+// import firebase from "firebase/app";
 import "firebase/auth";
+import jwt from 'jsonwebtoken'
 
 export default {
   name: 'app',
@@ -23,35 +23,74 @@ export default {
       navigationDisabled: null,
     };
   },
+  computed: {
+    isLoggedIn() {
+      return this.$store.state.isLoggedIn;
+    }
+  },
   created() {
-     firebase.auth().onAuthStateChanged((user) => {
-     this.$store.commit("updateUser", user);
-     if(user){
-      this.$store.dispatch("getCurrentUser");
-      console.log(this.$store.state.profileEmail);
-      console.log("hello")
-     }
-     });
+    // if (this.$store.state.isLoggedIn) {
+    //   const userString = localStorage.getItem('user');
+    //   const user = JSON.parse(userString);
+    //   this.$store.dispatch("GetUser", user);
+    // }
+    const userString = localStorage.getItem('user');
+    const user = JSON.parse(userString);
+    console.log(user)
+    if (user) {
+      if (user.token && user.userId && user.role) {
+        this.$store.state.isLoggedIn = true;
+        const decodedToken = jwt.decode(user.token);
+        console.log(decodedToken);
+        const expirationTime = decodedToken.exp * 1000;
+
+        const timeout = expirationTime - Date.now();
+        setTimeout(() => {
+          localStorage.removeItem('token');
+          this.$store.state.isLoggedIn = false;
+
+        }, timeout);
+      }
+    }
+    //  firebase.auth().onAuthStateChanged((user) => {
+    //  this.$store.commit("updateUser", user);
+    //  if(user){
+    //   // this.$store.dispatch("getCurrentUser");
+    //   console.log(this.$store.state.profileEmail);
+    //   console.log("hello")
+    //  }
+    //  });
 
     this.checkRoute();
   },
-  mounted() {},
+  mounted() { },
   methods: {
-    checkRoute(){
-      if(this.$route.name === "Login" || 
-      this.$route.name === "Register" || 
-      this.$route.name === "ForgotPassword"
+    checkRoute() {
+      if (this.$route.name === "Login" ||
+        this.$route.name === "Register" ||
+        this.$route.name === "ForgotPassword"
       ) {
         this.navigationDisabled = true;
         return;
-      } 
+      }
       this.navigationDisabled = false;
-      
+
     }
   },
   watch: {
-    $route(){
+    $route() {
       this.checkRoute();
+    },
+    isLoggedIn(newCount, oldCount) {
+      const userString = localStorage.getItem('user');
+      const user = JSON.parse(userString);
+      if (newCount) {
+        this.$store.dispatch("GetUser", {
+          userId: user.userId,
+          token: user.token
+        })
+      }
+      console.log(oldCount)
     }
   },
 };
@@ -88,21 +127,24 @@ export default {
 .link-light {
   color: #fff;
 }
+
 .arrow {
   margin-left: 8px;
   width: 12px;
+
   path {
     fill: #000;
   }
 }
-.arrow-light{
-  path{
+
+.arrow-light {
+  path {
     fill: #fff;
   }
 }
 
 button,
-.router-button{
+.router-button {
   transition: 500ms ease all;
   cursor: pointer;
   margin-top: 24px;
@@ -112,15 +154,17 @@ button,
   border-radius: 20px;
   border: none;
   text-transform: uppercase;
-  &:focus{
+
+  &:focus {
     outline: none;
   }
-  &:hover{
+
+  &:hover {
     background-color: rgba(48, 48, 48, 0.7);
   }
 }
 
-.button-ghost{
+.button-ghost {
   color: #000;
   padding: 0;
   border-radius: 0;
@@ -128,16 +172,18 @@ button,
   font-size: 15px;
   font-weight: 500;
   background-color: transparent;
-  @media(min-width: 700px){
+
+  @media(min-width: 700px) {
     margin-top: 0;
     margin-left: auto;
   }
+
   i {
     margin-left: 8px;
   }
 }
 
-.button-light{
+.button-light {
   background-color: transparent;
   border: 2px solid #fff;
   color: #fff;
@@ -150,34 +196,38 @@ button,
   background-color: rgba(128, 128, 128, 0.5) !important;
 }
 
-.blog-card-wrap{
-   position: relative;
-   padding: 80px 16px;
-   background-color: #f1f1f1;
-   @media(min-width: 500px){
+.blog-card-wrap {
+  position: relative;
+  padding: 80px 16px;
+  background-color: #f1f1f1;
+
+  @media(min-width: 500px) {
     padding: 100px 16px;
-   }
-   
-   .blog-cards{
+  }
+
+  .blog-cards {
     display: grid;
     gap: 32px;
     grid-template-columns: 1fr;
-    @media(min-width: 500px){
-      grid-template-columns: repeat(2, 1fr);  
+
+    @media(min-width: 500px) {
+      grid-template-columns: repeat(2, 1fr);
     }
-    @media(min-width: 900px){
-      grid-template-columns: repeat(3, 1fr);  
+
+    @media(min-width: 900px) {
+      grid-template-columns: repeat(3, 1fr);
     }
-    @media(min-width: 1200px){
-      grid-template-columns: repeat(4, 1fr);  
+
+    @media(min-width: 1200px) {
+      grid-template-columns: repeat(4, 1fr);
     }
-   }
+  }
 }
 
-.error{
+.error {
   font-size: 15px;
   color: red;
   text-align: center;
-  
+
 }
 </style> 

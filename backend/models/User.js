@@ -15,10 +15,6 @@ const userSchema = new Schema(
         userName: {
             type: String
         },
-        role:{
-            type:String
-        }
-
     }, {
     collection: 'Users'
 }
