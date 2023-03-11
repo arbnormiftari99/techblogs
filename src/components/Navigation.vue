@@ -8,13 +8,8 @@
                 <ul v-bind="navigationDisabled" v-show="!mobile">
                     <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
                     <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
-<<<<<<< HEAD
                     <router-link class="link" :to="{ name: 'CreatePost' }">Create a Post</router-link>
                     <router-link v-if="!user" class="link" :to="{ name: 'Login' }">Login/Register</router-link>
-=======
-                    <router-link v-if="isLoggedIn" class="link" :to="{ name: 'CreatePost' }">Create a Post</router-link>
-                    <router-link v-if="!isLoggedIn" class="link" :to="{ name: 'Login' }">Login/Register</router-link>
->>>>>>> 8903b1ead5bb32563a79a358538b0ce919261793
                 </ul>
                 <div v-if="isLoggedIn" @click="profileMenuToggle" class="profile" ref="profile">
                     <span>{{ this.$store.state.profileInitials }}</span>
@@ -54,13 +49,8 @@
             <ul v-bind="navigationDisabled" class="mobile-nav" v-show="mobileNav">
                 <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
                 <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
-<<<<<<< HEAD
                 <router-link class="link" :to="{name: 'CreatePost'}">CreatePost</router-link>
                 <router-link v-if="!user" class="link" :to="{ name: 'Login' }">Login/Register</router-link>
-=======
-                <router-link v-if="isLoggedIn" class="link" :to="{ name: 'Blogs' }">Create a Post</router-link>
-                <router-link v-if="!isLoggedIn" class="link" :to="{ name: 'create-post' }">Login/Register</router-link>
->>>>>>> 8903b1ead5bb32563a79a358538b0ce919261793
 
             </ul>
         </transition>

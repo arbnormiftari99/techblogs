@@ -16,26 +16,8 @@ export default new Vuex.Store({
       { blogTitle: "Blog Card #4", blogCoverPhoto: "stock-4", blogDate: "Janar 21, 2023" }
 
 
-<<<<<<< HEAD
-     ],
-     blogPosts: [],
-     postLoaded: null,
-
-     blogHTML: "Your blog Title",
-     blogTitle: "",
-     blogPhotoName: "",
-     blogPhotoFileURL: null,
-     blogPhotoPreview: null,
-     editPost: null,
-     user: null,
-     profileEmail: null,
-     profileFirstName: null,
-     profileLastName: null,
-     profileUsername: null,
-     profileId: null,
-     profileInitials: null
-=======
     ],
+    blogPosts:[],
     blogHTML: "Your blog Title",
     blogTitle: "",
     blogPhotoName: "",
@@ -50,7 +32,6 @@ export default new Vuex.Store({
     profileUsername: null,
     profileId: null,
     profileInitials: null
->>>>>>> 8903b1ead5bb32563a79a358538b0ce919261793
   },
   mutations: {
     signOut(state) {
@@ -60,6 +41,13 @@ export default new Vuex.Store({
       state.profileLastName = null;
       state.profileUsername = null;
 
+    },
+    addBlogs(state,payload){
+      const modifiedPayload = payload.map(obj => ({
+        ...obj,
+        dateAdded: obj.dateAdded.slice(0, 10) 
+      }));
+      state.blogCards = modifiedPayload;
     },
     newBlogPost(state, payload) {
       state.blogHTML = payload;
@@ -120,6 +108,13 @@ export default new Vuex.Store({
   },
 
   actions: {
+    async GetBlogs({commit}){
+      const res = await API.blogList();
+      console.log(res);
+      console.log("---------");
+
+      commit("addBlogs", res);
+    },
     async RegisterUser({ commit }, payload) {
       const res = await API.userRegister(payload)
       console.log(commit);
