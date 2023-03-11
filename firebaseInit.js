@@ -1,6 +1,6 @@
 const dotenv = require('dotenv');
 dotenv.config()
-import firebase from 'firebase/app';
+const firebase = require('firebase/app').default;
 
 require('firebase/firestore');
 
@@ -23,6 +23,6 @@ console.log(process.env.VUE_APP_API_KEY)
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 const timestamp = firebase.firestore.FieldValue.serverTimestamp;
-export {timestamp};
-export default firebaseApp.firestore();
+const firestore = firebaseApp.firestore()
+module.exports = { firestore, timestamp };
 

@@ -1,20 +1,12 @@
-const firebase = require("firebase");
-const db = require('../../firebaseInit').firebaseDB;
-
+const firebase = require("firebase").default;
+const addTrackerRecord = require('./tracker.route').addTrackerRecord;
+const admin = require('firebase-admin');
+const db = require('../../firebaseInit').firestore;
 const express = require('express');
-const UserModel = require('../models/User');
-const TrackerModel = require('../models/Tracker');
 const userRoute = express.Router();
+const checkIfAdmin = require('../auth-middleware').checkIfAdmin;
+const checkIfAuthenticated = require('../auth-middleware').checkIfAuthenticated;
 
-// userRoute.route('/').get(async (req, res, next) => {
-//     UserModel.find((error, data) => {
-//         if (error) {
-//             return next(error)
-//         } else {
-//             res.json(data)
-//         }
-//     })
-// })
 
 userRoute.route('/register').post(async (req, res, next) => {
     try {
@@ -29,77 +21,75 @@ userRoute.route('/register').post(async (req, res, next) => {
             email: req.body.email,
             role: 'USER'
         });
+        const token = await result.user.getIdToken()
+        addTrackerRecord({
+            userId: req.body.userId,
+            operationType: 'CREATE',
+            operationDescription: `A User with ${req.body.id} has been registered`,
+            entityType: 'User'
+        })
+        res.json(
+            {
+                token: token,
+                userId: result.user.uid,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                username: req.body.username,
+                email: req.body.email,
+                role: 'USER'
+            }
+        );
     }
     catch (err) {
-        console.log(err)
+        res.json(err);
+        console.log(err);
     }
-    res.send({ msg: 'it reached', ...req.body })
-
-    // UserModel.create(req.body, (error, data) => {
-    //     if (error) {
-    //         return next(error)
-    //     } else {
-    //         TrackerModel.create({
-    //             operationType: "CREATE",
-    //             dateAdded: new Date(Date.now()),
-    //             operationDescription:
-    //                 `User with content:${JSON.stringify(req.body)} was added`
-    //         })
-    //         res.json(data)
-    //     }
-    // })
 })
 
-userRoute.route('/:id').get(async (req, res, next) => {
-    UserModel.findById(req.params.id, (error, data) => {
-        if (error) {
-            return next(error)
-        } else {
-            res.json(data)
-        }
-    })
+userRoute.route('/:id').get(checkIfAuthenticated, async (req, res, next) => {
+    const userInfo = db.collection("users")
+        .doc(req.params.id);
+    const user = await (await userInfo.get()).data();
+    res.json(user);
 })
 
-userRoute.route('/:id').put(async (req, res, next) => {
-    UserModel.findByIdAndUpdate(
-        req.params.id,
-        {
-            $set: req.body,
-        },
-        (error, data) => {
-            if (error) {
-                return next(error)
-            } else {
-                TrackerModel.create({
-                    operationType: "EDIT",
-                    dateAdded: new Date(Date.now()),
-                    operationDescription:
-                        `User with content:
-                        ${JSON.stringify(Object.assign({}, req.params.id, req.body))} was edited`
-                })
-                res.json(Object.assign({}, data._doc, req.body))
-            }
-        },
-    )
+userRoute.route('/login').post(async (req, res, next) => {
+    try {
+        const response = await firebase
+            .auth().signInWithEmailAndPassword(req.body.email, req.body.password);
+        const token = await response.user.getIdToken();
+        const userInfo = await admin
+            .auth()
+            .verifyIdToken(token);
+        res.json({ token: token, role: userInfo.admin ? 'ADMIN' : 'USER', userId: userInfo.uid });
+        console.log(userInfo);
+    } catch (err) {
+        res.json(err);
+    }
 })
 
-userRoute.route('/:id').delete(async (req, res, next) => {
-    UserModel.findByIdAndRemove(req.params.id, (error, data) => {
-        if (error) {
-            return next(error)
-        } else {
-
-            TrackerModel.create({
-                operationType: "DELETE",
-                dateAdded: new Date(Date.now()),
-                operationDescription:
-                    `User with id:
-                    ${req.params.id} was deleted`
+userRoute.route('/promote').post(checkIfAdmin, async (req, res, next) => {
+    const { userId } = req.body; // userId is the firebase uid for the user
+    try {
+        await admin.auth().setCustomUserClaims(userId, { admin: true });
+        await firebase.firestore()
+            .collection('users').doc(userId)
+            .update({
+                role: 'ADMIN'
             })
-            res.status(200).json({
-                msg: data,
-            })
-        }
-    })
+
+        addTrackerRecord({
+            userId: req.body.userId,
+            operationType: 'PROMOTE',
+            operationDescription: `A User with ${userId} has been promoted to admin`,
+            entityType: 'User'
+        })
+
+        res.send({ message: 'Success promoting the user' })
+
+    } catch (err) {
+        res.json({ msg: 'Something went wrong' });
+    }
 })
+
 module.exports = userRoute;

@@ -44,9 +44,11 @@ import 'firebase/firestore';
 
 
 
-import firebase from "firebase/app";
+// import firebase from "firebase/app";
 import "firebase/auth";
-import firebaseDB from "../../firebaseInit";
+// import firebaseDB from "../../firebaseInit";
+import { mapActions } from 'vuex';
+
 export default {
   name: "Register",
 
@@ -65,7 +67,8 @@ export default {
     };
   },
   methods: {
-    async register() {
+    ...mapActions(['RegisterUser']),
+    register() {
       if (
         this.email !== "" &&
         this.password !== "" &&
@@ -75,17 +78,29 @@ export default {
       ) {
         this.error = false;
         this.errorMsg = "";
-        const firebaseAuth = await firebase.auth();
-        const createUser = await firebaseAuth.createUserWithEmailAndPassword(this.email, this.password);
-        const result = await createUser;
-        const dataBase = firebaseDB.collection("users").doc(result.user.uid);
-        // this.$router.push({ name: "Home" }); 
-        await dataBase.set({
+        this.RegisterUser({
+          email: this.email,
+          password: this.password,
           firstName: this.firstName,
           lastName: this.lastName,
-          username: this.username,
-          email: this.email,
-        });
+          username: this.username
+        }).then(() => {
+          console.log('user registered')
+        }).catch((err) => {
+          this.error = true;
+          this.errorMsg = err.message;
+        })
+        // const firebaseAuth = await firebase.auth();
+        // const createUser = await firebaseAuth.createUserWithEmailAndPassword(this.email, this.password);
+        // const result = await createUser;
+        // const dataBase =  firebaseDB.collection("users").doc(result.user.uid);
+        // // this.$router.push({ name: "Home" }); 
+        // await dataBase.set({
+        //   firstName: this.firstName,
+        //   lastName: this.lastName,
+        //   username: this.username,
+        //   email: this.email,
+        // });
         this.$router.push({ name: "Home" });
         return;
       }
