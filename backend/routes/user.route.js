@@ -1,4 +1,5 @@
 const firebase = require("firebase").default;
+const addTrackerRecord = require('./tracker.route').addTrackerRecord;
 const admin = require('firebase-admin');
 const db = require('../../firebaseInit').firestore;
 const express = require('express');
@@ -21,6 +22,12 @@ userRoute.route('/register').post(async (req, res, next) => {
             role: 'USER'
         });
         const token = await result.user.getIdToken()
+        addTrackerRecord({
+            userId: req.body.userId,
+            operationType: 'CREATE',
+            operationDescription: `A User with ${req.body.id} has been registered`,
+            entityType: 'User'
+        })
         res.json(
             {
                 token: token,
@@ -39,10 +46,10 @@ userRoute.route('/register').post(async (req, res, next) => {
     }
 })
 
-userRoute.route('/:id').get(checkIfAuthenticated,async (req,res,next)=>{
+userRoute.route('/:id').get(checkIfAuthenticated, async (req, res, next) => {
     const userInfo = db.collection("users")
         .doc(req.params.id);
-    const user =await (await userInfo.get()).data();
+    const user = await (await userInfo.get()).data();
     res.json(user);
 })
 
@@ -70,21 +77,19 @@ userRoute.route('/promote').post(checkIfAdmin, async (req, res, next) => {
             .update({
                 role: 'ADMIN'
             })
+
+        addTrackerRecord({
+            userId: req.body.userId,
+            operationType: 'PROMOTE',
+            operationDescription: `A User with ${userId} has been promoted to admin`,
+            entityType: 'User'
+        })
+
         res.send({ message: 'Success promoting the user' })
 
     } catch (err) {
         res.json({ msg: 'Something went wrong' });
     }
 })
-
-// userRoute.route('/:id').get(async (req, res, next) => {
-//     UserModel.findById(req.params.id, (error, data) => {
-//         if (error) {
-//             return next(error)
-//         } else {
-//             res.json(data)
-//         }
-//     })
-// })
 
 module.exports = userRoute;
