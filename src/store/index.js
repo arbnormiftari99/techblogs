@@ -16,6 +16,8 @@ export default new Vuex.Store({
 
 
      ],
+     blogPosts: [],
+     postLoaded: null,
 
      blogHTML: "Your blog Title",
      blogTitle: "",

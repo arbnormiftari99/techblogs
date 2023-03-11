@@ -15,7 +15,7 @@
      <div v-if="!user" class="updates">
         <div class="container">
           <h4>Never miss a post - Create your account for free. TECHBLOGS!</h4>
-          <router-link class="router-button" to="#"> Register TechBlogs <Arrow class="arrow arrow-light"/></router-link>
+          <router-link class="router-button" :to="{name: 'Login'}"> Register TechBlogs <Arrow class="arrow arrow-light"/></router-link>
         </div>
 
      </div>    
