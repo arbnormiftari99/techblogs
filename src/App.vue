@@ -46,7 +46,7 @@ export default {
 
         const timeout = expirationTime - Date.now();
         setTimeout(() => {
-          localStorage.removeItem('token');
+          localStorage.removeItem('user');
           this.$store.state.isLoggedIn = false;
 
         }, timeout);
