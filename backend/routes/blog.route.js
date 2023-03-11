@@ -1,6 +1,6 @@
 const express = require('express');
 const BlogModel = require('../models/Blog');
-const addTrackerRecord = require('./tracker.route').trackerRoute;
+const addTrackerRecord = require('./tracker.route').addTrackerRecord;
 const blogRoute = express.Router();
 const checkIfAuthenticated = require('../auth-middleware').checkIfAuthenticated;
 const multer = require('multer')
@@ -19,8 +19,7 @@ blogRoute.route('/').get(async (req, res, next) => {
 })
 
 blogRoute.route('/').post(upload.single('image'), async (req, res, next) => {
-    console.log(req.body)
-
+   
     if (req.file) {
         const image = {
             name: req.file.originalname,
@@ -36,7 +35,12 @@ blogRoute.route('/').post(upload.single('image'), async (req, res, next) => {
         if (error) {
             return next(error)
         } else {
-
+            addTrackerRecord({
+                userId: req.body.userId,
+                operationType: 'CREATE',
+                operationDescription: `Created a new Blog by user with id ${req.body.userId}`,
+                entityType: 'Blog'
+            })
             res.json(data)
         }
     })
@@ -63,7 +67,12 @@ blogRoute.route('/:id').put(checkIfAuthenticated, async (req, res, next) => {
             if (error) {
                 return next(error)
             } else {
-
+                addTrackerRecord({
+                    userId: req.body.userId,
+                    operationType: 'UPDATE',
+                    operationDescription: `Updated a Blog with ${req.params.id} by user with id ${req.body.userId}`,
+                    entityType: 'Blog'
+                })
                 res.json(Object.assign({}, data._doc, req.body))
             }
         },
@@ -75,6 +84,12 @@ blogRoute.route('/:id').delete(checkIfAuthenticated, async (req, res, next) => {
         if (error) {
             return next(error)
         } else {
+            addTrackerRecord({
+                userId: req.body.userId,
+                operationType: 'DELETE',
+                operationDescription: `Deleted a Blog with ${req.params.id} by user with id ${req.body.userId}`,
+                entityType: 'Blog'
+            })
             res.status(200).json({
                 msg: data,
             })
