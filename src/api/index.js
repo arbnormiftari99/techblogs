@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:4000/api';
+const BASE_URL = 'http://localhost:8080/api';
 
 export const API = {
     async userLogIn({ email, password }) {
@@ -51,22 +51,26 @@ export const API = {
     },
     async blogList() {
         const res = await axios.get(`${BASE_URL}/blogs`);
-        console.log(res);
+        return res.data;
     },
-    async blogCreate({ blog, token, userId, username }) {
-        const body = {
-            title: blog.title,
-            dateAdded: new Date(Date.now()),
-            textContent: blog.textContent,
-            userId: userId,
-            username: username,
-            img: null
-        }
-        const res = axios.post(`${BASE_URL}/blogs`, body, {
-            headers:
-                { authorization: `Bearer ${token}` }
+    async blogCreate({ blog, token, userId, username, file }) {
+        console.log(blog);
+        const formData = new FormData();
+        formData.append("title", blog.title);
+        formData.append("dateAdded", new Date(Date.now()));
+        formData.append("textContent", blog.textContent);
+        formData.append("userId", userId);
+        formData.append("username", username);
+        formData.append("image", file);
+    
+        const res = await axios.post(`${BASE_URL}/blogs`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                authorization: `Bearer ${token}`,
+            },
         });
-        console.log(res);
+    
+        return res.data;
     },
     async blogGet({ blogId }) {
         const res = await axios.get(`${BASE_URL}/blogs/${blogId}`);
