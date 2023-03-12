@@ -9,17 +9,19 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 blogRoute.route('/').get(async (req, res, next) => {
-    await BlogModel.find((error, data) => {
-        if (error) {
-            return next(error)
-        } else {
-            res.json(data)
-        }
-    })
+    try {
+        await BlogModel.find((error, data) => {
+            if (error) {
+                return next(error)
+            } else {
+                res.json(data)
+            }
+        })
+    } catch { (err) => console.log(err) }
 })
 
 blogRoute.route('/').post(upload.single('image'), async (req, res, next) => {
-   
+
     if (req.file) {
         const image = {
             name: req.file.originalname,
@@ -27,7 +29,7 @@ blogRoute.route('/').post(upload.single('image'), async (req, res, next) => {
             contentType: req.file.mimetype
         }
         req.body.img = image;
-    }else{
+    } else {
         req.body.img = null
     }
     console.log(req.body)

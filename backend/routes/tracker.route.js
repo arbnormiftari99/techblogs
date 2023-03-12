@@ -22,7 +22,7 @@ trackerRoute.route('/:id').get(checkIfAdmin, async (req, res, next) => {
     })
 })
 
-const addTrackerRecord = (userId, operationType, operationDescription, entityType) => {
+const addTrackerRecord = ({userId, operationType, operationDescription, entityType}) => {
     TrackerModel.create({
         userId: userId,
         operationType: operationType,
