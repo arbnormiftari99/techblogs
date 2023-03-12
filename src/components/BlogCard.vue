@@ -8,10 +8,11 @@
                 <Delete class="delete" />
             </div>
         </div>
-        <img :src="require(`../assets/blogCards/${post.blogCoverPhoto}.jpg`)" alt="">
+        <!-- <img :src="require(`../assets/blogCards/stock-1.jpg`)" alt=""> -->
+        <img :src="imageSrc" alt="Blog Image">
         <div class="info">
-            <h4>{{ post.blogTitle }}</h4>
-            <h6>Posted on: {{ post.blogDate }}</h6>
+            <h4>{{ post.title }}</h4>
+            <h6>Posted on: {{ post.dateAdded }}</h6>
             <router-link class="link" to="#">
                 View the Post
                 <Arrow class="arrow" />
@@ -30,6 +31,18 @@ export default {
     props: ['post'],
     components: {
         Arrow, Edit, Delete
+    },
+    data(){
+        return{
+            imageSrc: '' 
+        }
+    },
+    mounted() {
+        console.log(this.post.img.data.data);
+        const binaryData = this.post.img.data.data; // get the binary data from the blog object
+        const typedArray = new Uint8Array(binaryData); // create a typed array from the binary data
+        const blob = new Blob([typedArray], { type: 'image/jpeg'}); // create a blob object with the typed array and content type
+        this.imageSrc = URL.createObjectURL(blob); // create a URL for the blob object and set it as the image source
     },
     computed: {
         editPost() {
@@ -154,4 +167,5 @@ export default {
 
         }
     }
-}</style>
+}
+</style>
