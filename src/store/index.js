@@ -17,12 +17,15 @@ export default new Vuex.Store({
 
 
     ],
-    blogPosts:[],
-    blogHTML: "Your blog Title",
-    blogTitle: "",
-    blogPhotoName: "",
-    blogPhotoFileURL: null,
-    blogPhotoPreview: null,
+    selectedBlog: {
+      blogPhotoName: "",
+      blogHTML: "Your blog Title",
+      blogTitle: "",
+      blogPhotoFileURL: null,
+      blogPhotoPreview: null,
+    },
+    blogPosts: [],
+
     editPost: null,
     isLoggedIn: false,
     user: null,
@@ -42,28 +45,29 @@ export default new Vuex.Store({
       state.profileUsername = null;
 
     },
-    addBlogs(state,payload){
+    addBlogs(state, payload) {
       const modifiedPayload = payload.map(obj => ({
         ...obj,
-        dateAdded: obj.dateAdded.slice(0, 10) 
+        dateAdded: obj.dateAdded.slice(0, 10)
       }));
-      state.blogCards = modifiedPayload;
+      state.blogPosts = modifiedPayload;
     },
     newBlogPost(state, payload) {
-      state.blogHTML = payload;
+      state.selectedBlog.blogHTML = payload;
     },
     updateBlogTitle(state, payload) {
-      state.blogTitle = payload;
+      state.selectedBlog.blogTitle = payload;
     },
     fileNameChange(state, payload) {
-      state.blogPhotoName = payload;
+      state.selectedBlog.blogPhotoName = payload;
     },
     createFileURL(state, payload) {
-      state.blogPhotoFileURL = payload;
+      state.selectedBlog.blogPhotoFileURL = payload;
     },
     openPhotoPreview(state) {
-      state.blogPhotoPreview = !state.blogPhotoPreview;
+      state.selectedBlog.blogPhotoPreview = !state.blogPhotoPreview;
     },
+    //
     setLoggedIn(state, payload) {
       const userData = JSON.parse(localStorage.getItem('user'));
       console.log('ti got called')
@@ -108,35 +112,31 @@ export default new Vuex.Store({
   },
 
   actions: {
-    async GetBlogs({commit}){
+    async CreateBlog({ commit }, payload) {
+      console.log(commit)
+      try {
+        const res = await API.blogCreate(payload);
+        console.log(res)
+      } catch { (err) => console.log(err) }
+    },
+    async GetBlogs({ commit }) {
       const res = await API.blogList();
-      console.log(res);
-      console.log("---------");
-
       commit("addBlogs", res);
     },
     async RegisterUser({ commit }, payload) {
       const res = await API.userRegister(payload)
-      console.log(commit);
-      console.log(res)
       commit("setLoggedIn", res);
 
     },
     async LogInUser({ commit }, payload) {
       const res = await API.userLogIn(payload);
-      console.log(res)
       commit("setLoggedIn", res);
-
-      console.log(res)
-      console.log(commit)
     },
     async GetUser({ commit }, payload) {
       const user = await API.getUser({
         userId: payload.userId,
         token: payload.token
       })
-      console.log('8888')
-      console.log(user)
       commit("setProfileInfo", user);
     },
     async getCurrentUser({ commit }) {
