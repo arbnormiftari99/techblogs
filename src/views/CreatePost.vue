@@ -1,31 +1,40 @@
 <template>
-  <div class="create-post">
-    <BlogCoverPreview v-show="this.$store.state.BlogCoverPreview"/>
-    <Loading v-show="loading"/>
-    <div class="container">
-        <div :class="{invisible: !error}" class="err-message">
-            <p><span>Error: </span>{{ this.errorMsg }}</p>
-        </div>
-         <div class="blog-info">
-            <input type="text" placeholder="Enter Blog Title" v-model="blogTitle">
-            <div class="upload-file">
-                <label for="blog-photo">Upload Cover Photo</label>
-                <input type="file" ref="blogPhoto" id="blog-photo" @change="fileChange" accept=".png, .jpg, .jpeg"/>
-                <button @click="openPreview" class="preview" :class="{ 'button-inactive': !this.$store.state.blogPhotoFileURL}">
-                    Preview Photo
-                </button>
-                <span>File Chosen: {{ this.$store.state.blogPhotoName }}</span>
+    <div class="create-post">
+        <BlogCoverPreview v-show="this.$store.state.BlogCoverPreview" />
+        <Loading v-show="loading" />
+        <div class="container">
+            <div :class="{ invisible: !error }" class="err-message">
+                <p><span>Error: </span>{{ this.errorMsg }}</p>
             </div>
-         </div>
-         <div class="editor">
-            <vue-editor :editorOptions="editorSettings" v-model="blogHTML" useCustomImageHandler @image-added="imageHandler"/>
-         </div>
-         <div class="blog-actions">
-            <button @click="uploadBlog">Publish Blog</button>
-            <router-link class="router-button" :to="{name: 'BlogPreview'}">Post Preview</router-link>
-         </div>
+            <div class="blog-info">
+                <input type="text" placeholder="Enter Blog Title" v-model="blogTitle">
+                <div class="upload-file">
+                    <label for="blog-photo">Upload Cover Photo</label>
+                    <input type="file" ref="blogPhoto" id="blog-photo" @change="fileChange" accept=".png, .jpg, .jpeg" />
+                    <button @click="openPreview" class="preview"
+                        :class="{ 'button-inactive': !this.$store.state.selectedBlog.blogPhotoFileURL }">
+                        Preview Photo
+                    </button>
+                    <span>File Chosen: {{ this.$store.state.selectedBlog.blogPhotoName }}</span>
+                </div>
+            </div>
+            <div class="editor">
+                hello
+                <vue-editor :editorOptions="editorOptions" v-model="blogHTMLData" useCustomImageHandler />
+            </div>
+            <div class="blog-actions">
+                <button @click="uploadBlog">Publish Blog</button>
+                <router-link class="router-button" :to="{ name: 'BlogPreview' }">Post Preview</router-link>
+            </div>
+            <div class="modal" v-if="showPreviewModal">
+                <div class="modal-background"></div>
+                <div class="modal-content">
+                    <img :src="this.$store.state.selectedBlog.blogPhotoFileURL" alt="Blog Cover Preview">
+                </div>
+                <button class="modal-close is-large" aria-label="close" @click="showPreviewModal = false"></button>
+            </div>
+        </div>
     </div>
-  </div>
 </template>
  
 <script>
@@ -33,7 +42,7 @@ import Loading from "../components/Loading.vue";
 import BlogCoverPreview from '../components/BlogCoverPreview.vue';
 import firebase from "firebase/app";
 import "firebase/storage";
-import firebaseDB from "../../firebaseInit";
+// import firebaseDB from "../../firebaseInit";
 
 import Quill from "quill";
 
@@ -43,20 +52,32 @@ Quill.register("modules/imageResize", ImageResize);
 export default {
     name: 'CreatePost',
 
-    data(){
-        return{
+    data() {
+        return {
+            showPreviewModal: false,
             error: null,
             errorMsg: null,
             file: null,
             loading: null,
-            editorSettings: {
+            blogTitle: '',
+            blogHTMLData: '',
+            editorOptions: {
                 modules: {
-                    ImageResize: {},
- 
+                    toolbar: {
+                        container: [
+                            ["bold", "italic", "underline", "strike"],
+                            [{ header: 1 }, { header: 2 }],
+                            [{ list: "ordered" }, { list: "bullet" }],
+                            [{ align: [] }],
+                            ["link", "image"],
+                        ],
+                        handlers: {
+                            image: this.imageHandler,
+                        },
+                    },
                 }
             }
         }
-
     },
 
     components: {
@@ -66,133 +87,115 @@ export default {
 
 
     methods: {
-        
-        fileChange(){
+
+        fileChange() {
             this.file = this.$refs.blogPhoto.files[0];
             const fileName = this.file.name;
             this.$store.commit("fileNameChange", fileName);
             this.$store.commit("createFileURL", URL.createObjectURL(this.file));
 
         },
-        openPreview(){
+        openPreview() {
             this.$store.commit("openPhotoPreview");
+            this.showPreviewModal = true; // set modal display to true
         },
-        imageHandler(file, Editor, cursorLocation, resetUploader){
+        imageHandler(file, Editor, cursorLocation, resetUploader) {
             const storageRef = firebase.storage().ref();
             const docRef = storageRef.child(`documents/blogPostPhotos/${file.name}`);
-            docRef.put(file).on("state_changed",(snapshot) =>{
-                 console.log(snapshot);
-            }, 
-            (err) => {
-                 console.log(err);
-            }, async () => {
-                const downloadURL = await docRef.getDownloadURL();
-                Editor.insertEmbed(cursorLocation, "image", downloadURL);
-                resetUploader();
-            }
+            docRef.put(file).on("state_changed", (snapshot) => {
+                console.log(snapshot);
+            },
+                (err) => {
+                    console.log(err);
+                }, async () => {
+                    const downloadURL = await docRef.getDownloadURL();
+                    Editor.insertEmbed(cursorLocation, "image", downloadURL);
+                    resetUploader();
+                }
             )
 
         },
-
-        uploadBlog(){
-            if(this.blogTitle.length !== 0 && this.blogHTML.length !== 0){
-                if(this.file){
-                    this.loading = true
-                    const storageRef = firebase.storage().ref();
-                    const docRef = storageRef.child(`documents/BlogsCoverPhotos/${this.$store.state.blogPhotoName}`);
-                    docRef.put(this.file).on("state_changed", (snapshot) => {
-                        console.log(snapshot);
-                    },
-                     (err) => {
-                        console.log(err); 
-                        this.loading = false;
-                    }, async () => {
-                        const downloadURL = await docRef.getDownloadURL();
-                        const timestamp = await Date.now();
-                        const dataBase = await firebaseDB.collection("blogPosts").doc();
-
-                        await dataBase.set({
-                            blogID: dataBase.id,
-                            blogHTML: this.blogHTML,
-                            blogCoverPhoto: downloadURL,
-                            blogCoverPhotoName: this.blogCoverPhotoName,
-                            blogTitle: this.blogTitle,
-                            profileId: this.profileId,
-                            date: timestamp,
-                        });
-                        this.loading = false;
-
-                        this.$router.push({name: 'ViewBlog'});
-                        this.blogCoverPhotoName = "";
-
-
-                    }
-                    )
-                    return;
+        uploadBlog() {
+            const userData = JSON.parse(localStorage.getItem('user'));
+            const text = this.blogHTMLData.slice(3, this.blogHTMLData.length - 4);
+            if (this.blogTitle.length !== 0 && text !== 0) {
+                const token = userData.token;
+                const userId = userData.userId;
+                const username = this.$store.state.profileUsername;
+                const blog = {
+                    title: this.blogTitle,
+                    textContent: text,
+                    image: null,
                 }
-                this.error = true;
-            this.errorMsg = "Please ensure you uploaded a cover photo";
-            setTimeout(() => {
-                this.error = false;
-            },5000)
-            return;
-                
+                console.log(blog)
+                const payload = {
+                    blog: blog,
+                    token: token,
+                    userId: userId,
+                    username: username,
+                    file: this.file
+                }
+                console.log(payload)
+                this.$store.dispatch("CreateBlog", payload)
+                this.$router.push({ name: "Home" });
             }
-            this.error = true;
-            this.errorMsg = "Please ensure Title & Post has been filled";
-            setTimeout(() => {
-                this.error = false;
-            },5000)
-            return;
+        },
+        created() {
+            // Initialize the data property with the value from the computed property
+            this.blogHTMLData = this.blogHTML;
         },
 
-    },
 
+        computed: {
+            profileId() {
+                return this.$store.state.profileId;
+            },
 
-
-    computed: {
-    profileId(){
-        return this.$store.state.profileId;
-    },
-    blogCoverPhotoName(){
-        return this.$store.state.blogPhotoName;
-    },
-    blogTitle: {
-        get(){
-            return this.$store.state.blogTitle;
         },
-        set(payload){
-        this.$store.commit("updateBlogTitle", payload);
-          
-        },
-    },
-    blogHTML: {
-        get(){
-            return this.$store.state.blogHTML;
-        },
-        set(payload){
-        this.$store.commit("newBlogPost", payload);
-          
-        },
-    },
-    },
 
 
-};
+    },
+}
+
 </script>
 
 <style lang="scss">
+ .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
 
-.create-post{
+    .modal-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: transparent;
+    }
+
+    .modal-content {
+        max-width: 80%;
+        max-height: 80%;
+    }
+
+.create-post {
     position: relative;
     height: 100%;
-    
-    button{
+
+    button {
         margin-top: 0;
 
     }
 
-    .router-button{
+    .router-button {
         text-decoration: none;
         color: #fff;
 
@@ -200,7 +203,7 @@ export default {
 
     label,
     button,
-    .router-button{
+    .router-button {
         transition: 0.5s ease-in-out all;
         align-self: center;
         font-size: 14px;
@@ -211,24 +214,24 @@ export default {
         background-color: #303030;
         text-decoration: none;
 
-        &:hover{
+        &:hover {
             background-color: rgba(0, 115, 145, 0.8)
         }
     }
 
-    .container{
+    .container {
         position: relative;
         height: 100%;
         padding: 10px 25px 60px;
 
     }
-        
-    
-    .invisible{
+
+
+    .invisible {
         opacity: 0 !important;
     }
 
-    .err-message{
+    .err-message {
         width: 100%;
         padding: 12px;
         border-radius: 8px;
@@ -238,54 +241,54 @@ export default {
         opacity: 1;
         transition: 5s ease all;
 
-        p{
+        p {
             font-size: 14px;
 
         }
 
-        span{
+        span {
             font-weight: 600;
         }
     }
 
-    .blog-info{
+    .blog-info {
         display: flex;
         margin-bottom: 32px;
 
-        input:nth-child(1){
+        input:nth-child(1) {
             min-width: 300px;
 
         }
 
-        input{
+        input {
             transition: .5s ease-in-out all;
             padding: 10px 4px;
             border: none;
             border-bottom: 1px solid #303030;
 
-            &:focus{
+            &:focus {
                 outline: none;
                 box-shadow: 0 1px 0 0 #303030;
             }
         }
 
-        .upload-file{
+        .upload-file {
             flex: 1;
             margin-left: 16px;
             display: flex;
             position: relative;
 
-            input{
+            input {
                 display: none;
 
             }
 
-            .preview{
+            .preview {
                 margin-left: 16px;
                 text-transform: initial;
             }
 
-            span{
+            span {
                 font-size: 12px;
                 margin-left: 16px;
                 align-self: center;
@@ -296,37 +299,35 @@ export default {
 
     }
 
-    .editor{
+    .editor {
         height: 60vh;
         display: flex;
         flex-direction: column;
 
-        .quillWrapper{
+        .quillWrapper {
             position: relative;
             display: flex;
             flex-direction: column;
             height: 100%;
         }
 
-        .ql-container{
+        .ql-container {
             display: flex;
             flex-direction: column;
             height: 100%;
             overflow: scroll;
         }
-        .ql-editor{
+
+        .ql-editor {
             padding: 20px 16px 30px;
         }
     }
 
-    .blog-actions{
-        margin-top: 32px
-
-        button{
+    .blog-actions {
+        margin-top: 32px button {
             margin-right: 16px;
         }
     }
 
 }
-
 </style>
