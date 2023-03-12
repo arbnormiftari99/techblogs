@@ -8,8 +8,8 @@
                 <ul v-bind="navigationDisabled" v-show="!mobile">
                     <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
                     <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
-                    <router-link class="link" :to="{ name: 'CreatePost' }">Create a Post</router-link>
-                    <router-link v-if="!user" class="link" :to="{ name: 'Login' }">Login/Register</router-link>
+                    <router-link v-if="isLoggedIn" class="link" :to="{ name: 'CreatePost' }">Create a Post</router-link>
+                    <router-link v-if="!isLoggedIn" class="link" :to="{ name: 'Login' }">Login/Register</router-link>
                 </ul>
                 <div v-if="isLoggedIn" @click="profileMenuToggle" class="profile" ref="profile">
                     <span>{{ this.$store.state.profileInitials }}</span>
@@ -49,8 +49,8 @@
             <ul v-bind="navigationDisabled" class="mobile-nav" v-show="mobileNav">
                 <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
                 <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
-                <router-link class="link" :to="{name: 'CreatePost'}">CreatePost</router-link>
-                <router-link v-if="!user" class="link" :to="{ name: 'Login' }">Login/Register</router-link>
+                <router-link v-if="isLoggedIn" class="link" :to="{name: 'CreatePost'}">CreatePost</router-link>
+                <router-link v-if="!isLoggedIn" class="link" :to="{ name: 'Login' }">Login/Register</router-link>
 
             </ul>
         </transition>
@@ -62,7 +62,6 @@ import menuIcon from "../assets/Icons/bars-regular.svg"
 import userIcon from "../assets/Icons/user-alt-light.svg"
 import adminIcon from "../assets/Icons/user-crown-light.svg"
 import signOutIcon from "../assets/Icons/sign-out-alt-regular.svg"
-// import firebase from "firebase/app";
 import "firebase/auth";
 
 export default {
@@ -108,11 +107,9 @@ export default {
             this.mobileNav = !this.mobileNav;
         },
         signOut() {
-            // firebase.auth().signOut();
             localStorage.clear();
             this.$store.commit("signOut")
             this.$router.push({ name: 'Blogs'});
-            // window.location.reload();
 
         }
 
