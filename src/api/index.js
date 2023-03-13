@@ -66,7 +66,6 @@ export const API = {
     },
     async blogCreate({ blog, token, userId, username, file }) {
         try {
-            console.log(blog);
             const formData = new FormData();
             formData.append("title", blog.title);
             formData.append("dateAdded", new Date(Date.now()));
