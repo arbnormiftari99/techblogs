@@ -53,7 +53,7 @@ export default {
         signIn() {
             this.LogInUser({ email: this.email, password: this.password })
                 .then(() => {
-                    // this.$router.push({ name: 'Home' });
+                     this.$router.push({ name: 'Home' });
                     this.error = false;
                     this.errorMsg = '';
                     console.log('logged in')
