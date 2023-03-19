@@ -1,7 +1,7 @@
 
 <template>
   <div class="Home">
-    <BlogPost v-if="!user" :post="welcomeScreen" />
+    <BlogPost v-if="!isLoggedIn" :post="welcomeScreen" />
     <BlogPost :post="post" v-for="(post, index) in sampleBlogPost" :key="index" />
     <div class="blog-card-wrap">
       <div class="container">
@@ -42,19 +42,19 @@ export default {
       },
       sampleBlogPost: [
         {
-          title: 'This is a filler Title!',
-          blogHTML: 'This is a filler Title!',
+          title: 'Learn about programming!',
+          blogHTML: 'Programming Languages!',
           blogCoverPhoto: 'beautiful-stories',
 
         },
         {
-          title: 'This is a filler Title2!',
-          blogHTML: 'This is a filler Title!',
+          title: 'Virtual Reality!',
+          blogHTML: 'Virtual Reality (VR)!',
           blogCoverPhoto: 'designed-for-everyone',
         },
         {
-          title: 'This is a filler Titl2!',
-          blogHTML: 'This is a filler Title!',
+          title: 'Big Companies in technology!',
+          blogHTML: 'Work in a team!',
           blogCoverPhoto: 'company',
         }
       ],
@@ -71,8 +71,8 @@ export default {
     sampleBlogCards() {
       return this.$store.state.sampleBlogCards;
     },
-    user() {
-      return this.$store.state.user;
+    isLoggedIn() {
+      return this.$store.state.isLoggedIn;
     },
   },
 
