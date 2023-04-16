@@ -27,7 +27,9 @@ export default {
     created() {
         const userString = localStorage.getItem('user');
         const user = JSON.parse(userString);
-        this.$store.dispatch("GetUsers", {token: user.token})
+        if(user){
+            this.$store.dispatch("GetUsers", {token: user.token})
+        }
     }
 }
 </script>

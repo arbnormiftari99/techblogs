@@ -75,8 +75,8 @@ userRoute.route('/users').get(async (req, res, next) => {
 userRoute.route('/:id').get(checkIfAuthenticated, async (req, res, next) => {
     try {
         const userInfo = await db.collection("users")
-            .doc(req.params.id);
-        const user = await userInfo.get().data();
+            .doc(req.params.id).get();
+        const user = await userInfo.data();
         res.json(user);
     } catch (err) {
         next(err)

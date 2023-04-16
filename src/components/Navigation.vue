@@ -127,8 +127,7 @@ export default {
             return this.$store.state.isLoggedIn;
         },
         isAdmin(){
-            const user = JSON.parse(localStorage.getItem('user'))?JSON.parse(localStorage.getItem('user')):undefined;
-            console.log(user.role === 'ADMIN')
+            const user = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):undefined;
             return user?user.role === 'ADMIN':false
         }
     }

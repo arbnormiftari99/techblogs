@@ -29,13 +29,13 @@ export default new Vuex.Store({
     usersList: [],
     contentList: [],
 
-    logInError:{
-      email:undefined,
-      password:undefined,
+    logInError: {
+      email: undefined,
+      password: undefined,
     },
-    registerError:{
-      email:undefined,
-      password:undefined,
+    registerError: {
+      email: undefined,
+      password: undefined,
     },
 
     editPost: null,
@@ -122,7 +122,7 @@ export default new Vuex.Store({
     setProfileInitials(state) {
       state.profileInitials =
         state.profileFirstName.match(/(\b\S)?/g).join("") + state.profileLastName.match(/(\b\S)?/g).join("");
-        console.log('hehhe');
+      console.log('hehhe');
 
     },
     changeFirstName(state, payload) {
@@ -164,6 +164,8 @@ export default new Vuex.Store({
 
       console.log(commit);
       commit("setLoggedIn", res);
+      commit("setProfileInitials");
+
     },
     async GetUser({ commit }, payload) {
       const user = await API.getUser({
