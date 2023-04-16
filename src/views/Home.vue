@@ -7,15 +7,15 @@
       <div class="container">
       </div>
     </div>
-    <div v-if="!user" class="updates">
-      <div class="container">
-        <h4>Never miss a post - Create your account for free. TECHBLOGS!</h4>
-        <router-link class="router-button" :to="{ name: 'Login' }"> Register TechBlogs
-          <Arrow class="arrow arrow-light" />
-        </router-link>
-      </div>
 
-    </div>
+     <div v-if="!isLoggedIn" class="updates">
+        <div class="container">
+          <h4>Never miss a post - Create your account for free. TECHBLOGS!</h4>
+          <router-link class="router-button" :to="{name: 'Login'}"> Register TechBlogs <Arrow class="arrow arrow-light"/></router-link>
+        </div>
+
+     </div>    
+
   </div>
 </template>
 
@@ -59,22 +59,30 @@ export default {
         }
       ],
 
-    };
-  },
-  methods: {
-    async signIn() {
-      // await API.userLogIn({email:"admin101@gmail.com",password:"TheSecretPass123"})
-      await API.trackerList({ token: 'eyJhbGciOiJSUzI1NiIsImtpZCI6ImY4NzZiNzIxNDAwYmZhZmEyOWQ0MTFmZTYwODE2YmRhZWMyM2IzODIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vdGVjaGJsb2dzLTg1YTIxIiwiYXVkIjoidGVjaGJsb2dzLTg1YTIxIiwiYXV0aF90aW1lIjoxNjc4MjI5NjgyLCJ1c2VyX2lkIjoiUDhKT09mSlhySmJwYWF5YTVEUFVDeG5HNUF3MiIsInN1YiI6IlA4Sk9PZkpYckpicGFheWE1RFBVQ3huRzVBdzIiLCJpYXQiOjE2NzgyMjk2ODIsImV4cCI6MTY3ODIzMzI4MiwiZW1haWwiOiJhZG1pbjEwMUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiYWRtaW4xMDFAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.TM8hyfSmNvgrwda43IXGJz6xltDRoYSwtSXM3NALBfwu58n40Z8sf4SGTHI_f_8OZsW9asauSuigzd_zJXiCZz5I6M9GBdFwMdy54V33MKXrLPIKVzDbhrAw5niumXfMliUnxI8EVeyP3gXNNQLxUlYHS9W7FLIy4-qmmnj4ehXiTe-ZlNI1F745sDzqNjEVPClFpTYULxWoSELCNYndFnyZMz2zm-GwN0hflEB36BIXhcWKkPlruevQ4cFDd2oDDSJooBFIHjQg722UKwPai1Ya4uiwmLNmfwlyN80XDkPSgBD-X4wDDiQ6vLtOqBumXbcuZjWbbm3vJAWXcXlEow' })
-    }
-  },
-  computed: {
-    sampleBlogCards() {
-      return this.$store.state.sampleBlogCards;
+   
+      };
     },
-    isLoggedIn() {
-      return this.$store.state.isLoggedIn;
+    methods:{
+      async signIn(){
+        // await API.userLogIn({email:"admin101@gmail.com",password:"TheSecretPass123"})
+        await API.trackerList({token:'eyJhbGciOiJSUzI1NiIsImtpZCI6ImY4NzZiNzIxNDAwYmZhZmEyOWQ0MTFmZTYwODE2YmRhZWMyM2IzODIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vdGVjaGJsb2dzLTg1YTIxIiwiYXVkIjoidGVjaGJsb2dzLTg1YTIxIiwiYXV0aF90aW1lIjoxNjc4MjI5NjgyLCJ1c2VyX2lkIjoiUDhKT09mSlhySmJwYWF5YTVEUFVDeG5HNUF3MiIsInN1YiI6IlA4Sk9PZkpYckpicGFheWE1RFBVQ3huRzVBdzIiLCJpYXQiOjE2NzgyMjk2ODIsImV4cCI6MTY3ODIzMzI4MiwiZW1haWwiOiJhZG1pbjEwMUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsiYWRtaW4xMDFAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.TM8hyfSmNvgrwda43IXGJz6xltDRoYSwtSXM3NALBfwu58n40Z8sf4SGTHI_f_8OZsW9asauSuigzd_zJXiCZz5I6M9GBdFwMdy54V33MKXrLPIKVzDbhrAw5niumXfMliUnxI8EVeyP3gXNNQLxUlYHS9W7FLIy4-qmmnj4ehXiTe-ZlNI1F745sDzqNjEVPClFpTYULxWoSELCNYndFnyZMz2zm-GwN0hflEB36BIXhcWKkPlruevQ4cFDd2oDDSJooBFIHjQg722UKwPai1Ya4uiwmLNmfwlyN80XDkPSgBD-X4wDDiQ6vLtOqBumXbcuZjWbbm3vJAWXcXlEow'})
+      }
     },
-  },
+    computed: {
+      sampleBlogCards() { 
+        return this.$store.state.blogPosts.slice(0,4);
+      },
+      isLoggedIn() {
+            return this.$store.state.isLoggedIn;
+      },
+      user(){
+            return this.$store.state.user;
+        },  
+    },
+    created(){
+      this.$store.dispatch("GetBlogs")
+    },
+  
 
 };
 </script>

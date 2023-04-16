@@ -8,6 +8,8 @@
                 <ul v-bind="navigationDisabled" v-show="!mobile">
                     <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
                     <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
+                    <router-link v-if="isAdmin" class="link" :to="{ name: 'Content' }">Content</router-link>
+                    <router-link v-if="isAdmin" class="link" :to="{ name: 'Users' }">Users</router-link>
                     <router-link v-if="isLoggedIn" class="link" :to="{ name: 'CreatePost' }">Create a Post</router-link>
                     <router-link v-if="!isLoggedIn" class="link" :to="{ name: 'Login' }">Login/Register</router-link>
                 </ul>
@@ -125,9 +127,9 @@ export default {
             return this.$store.state.isLoggedIn;
         },
         isAdmin(){
-            const user = JSON.parse(localStorage.getItem('user'));
+            const user = JSON.parse(localStorage.getItem('user'))?JSON.parse(localStorage.getItem('user')):undefined;
             console.log(user.role === 'ADMIN')
-            return user.role === 'ADMIN'
+            return user?user.role === 'ADMIN':false
         }
     }
 };

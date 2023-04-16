@@ -51,7 +51,7 @@ export default {
     methods: {
         ...mapActions(['LogInUser']),
         signIn() {
-            this.LogInUser({ email: this.email, password: this.password })
+            this.LogInUser({ email: this.email.trim(), password: this.password })
                 .then(() => {
                      this.$router.push({ name: 'Home' });
                     this.error = false;

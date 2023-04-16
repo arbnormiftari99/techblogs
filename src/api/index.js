@@ -24,6 +24,7 @@ export const API = {
             lastName: lastName,
             username: username
         }
+
         try {
             const res = await axios.post(`${BASE_URL}/register`, body);
             console.log(res)
@@ -47,9 +48,11 @@ export const API = {
                 headers:
                     { authorization: `Bearer ${token}` }
             });
+
             return { state: 'successful', response: res.data }
         } catch (err) {
             return { state: 'error', response: err.response.data }
+
         }
     },
     async getUser({ userId, token }) {
@@ -60,11 +63,30 @@ export const API = {
         return response.data;
 
     },
+    async getUsers({ token }) {
+        try {
+            const res = await axios.get(`${BASE_URL}/users`, {
+                headers:
+                    { authorization: `Bearer ${token}` }
+            });
+            return res.data.map(user => ({
+                id: user.id,
+                firstName: user.firstName,
+                email: user.email,
+                lastName: user.lastName,
+                role: user.role,
+                username: user.username
+            }));
+        } catch (err) {
+            return err.message
+        }
+    },
     async blogList() {
         const res = await axios.get(`${BASE_URL}/blogs`);
         return res.data;
     },
     async blogCreate({ blog, token, userId, username, file }) {
+
         try {
             const formData = new FormData();
             formData.append("title", blog.title);
@@ -84,6 +106,7 @@ export const API = {
         } catch (err) {
             return { state: 'error', response: err.response.data }
         }
+
     },
     async blogGet({ blogId }) {
         const res = await axios.get(`${BASE_URL}/blogs/${blogId}`);
@@ -111,15 +134,29 @@ export const API = {
                 headers:
                     { authorization: `Bearer ${token}` }
             });
-            return { state: 'successful', response: res.data }
-        } catch (err) {
-            return { state: 'error', response: err.response.data }
+
+            return res;
         }
+        catch { (err) => console.log(err) }
     },
     async trackerList({ token }) {
-        await axios.get(`${BASE_URL}/tracker`, {
-            headers:
-                { authorization: `Bearer ${token}` }
-        });
+        try {
+            const res = await axios.get(`${BASE_URL}/tracker`, {
+                headers:
+                    { authorization: `Bearer ${token}` }
+            });
+            console.log(res)
+            return res.data.map((data) => ({
+                userId: data.userId,
+                operationType: data.operationType,
+                dateAdded: data.dateAdded,
+                entityType: data.entityType
+            }));
+        } catch {
+            (err) => {
+                console.log(err)
+            }
+        }
+
     },
 }

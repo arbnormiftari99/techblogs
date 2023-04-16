@@ -79,7 +79,7 @@ export default {
         this.error = false;
         this.errorMsg = "";
         this.RegisterUser({
-          email: this.email,
+          email: this.email.trim(),
           password: this.password,
           firstName: this.firstName,
           lastName: this.lastName,

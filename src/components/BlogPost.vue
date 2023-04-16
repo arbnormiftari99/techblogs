@@ -6,7 +6,7 @@
                 <h2 v-else>{{ post.title }}</h2>
                 <p v-if="post.welcomeScreen"> {{ post.blogPost }}</p>
                 <p class="content-preview" v-else>{{ post.blogHTML }}</p>
-                <router-link class="link link-light" v-if="post.welcomeScreen" :to="{name: 'Login'}">
+                <router-link class="link link-light" v-if="post.welcomeScreen" :to="{ name: 'Login' }">
                     Login/Register
                     <Arrow class="arrow arrow-light" />
                 </router-link>
@@ -161,5 +161,6 @@ export default {
         background-color: #303030;
         color: #fff;
     }
-}</style>
+}
+</style>
 
