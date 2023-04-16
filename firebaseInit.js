@@ -15,12 +15,6 @@ const firebaseConfig = {
   measurementId: process.env.VUE_APP_MEASUREMENT_ID
 };
 
-
-
-
-console.log(process.env.VUE_APP_API_KEY)
-
-
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 const timestamp = firebase.firestore.FieldValue.serverTimestamp;
 const firestore = firebaseApp.firestore()

@@ -25,8 +25,19 @@ export default new Vuex.Store({
       blogPhotoPreview: null,
     },
     blogPosts: [],
+
     usersList: [],
     contentList: [],
+
+    logInError:{
+      email:undefined,
+      password:undefined,
+    },
+    registerError:{
+      email:undefined,
+      password:undefined,
+    },
+
     editPost: null,
     isLoggedIn: false,
     user: null,
@@ -96,7 +107,6 @@ export default new Vuex.Store({
     },
     toggleEditPost(state, payload) {
       state.editPost = payload;
-      console.log(state.editPost);
     },
     updateUser(state, payload) {
       state.user = payload;
@@ -112,6 +122,7 @@ export default new Vuex.Store({
     setProfileInitials(state) {
       state.profileInitials =
         state.profileFirstName.match(/(\b\S)?/g).join("") + state.profileLastName.match(/(\b\S)?/g).join("");
+        console.log('hehhe');
 
     },
     changeFirstName(state, payload) {
@@ -147,7 +158,11 @@ export default new Vuex.Store({
 
     },
     async LogInUser({ commit }, payload) {
+
       const res = await API.userLogIn(payload);
+      console.log(res);
+
+      console.log(commit);
       commit("setLoggedIn", res);
     },
     async GetUser({ commit }, payload) {

@@ -43,6 +43,7 @@ export default {
             const typedArray = new Uint8Array(binaryData); // create a typed array from the binary data
             const blob = new Blob([typedArray], { type: 'image/jpeg' }); // create a blob object with the typed array and content type
             this.imageSrc = URL.createObjectURL(blob); // create a URL for the blob object and set it as the image source
+
         }
     },
     computed: {

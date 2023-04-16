@@ -36,7 +36,6 @@ export default {
     // }
     const userString = localStorage.getItem('user');
     const user = JSON.parse(userString);
-    console.log(user)
     if (user) {
       if (user.token && user.userId && user.role) {
         this.$store.state.isLoggedIn = true;

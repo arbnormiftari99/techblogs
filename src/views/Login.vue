@@ -3,7 +3,7 @@
         <form class="login">
             <p class="login-register">
                 Don't have an account?
-                <router-link class="router-link" :to="{ name: 'Register' }">Register</router-link>
+                <router-link class="router-link" :to="{ name: 'Register' }"><b>Register</b></router-link>
             </p>
             <h2>Login to TechBlogs</h2>
             <div class="inputs">
@@ -53,19 +53,7 @@ export default {
         signIn() {
             this.LogInUser({ email: this.email.trim(), password: this.password })
                 .then(() => {
-                    // const userString = localStorage.getItem('user');
-                    // const user = JSON.parse(userString);
-                    // this.GetUser({
-                    //     userId: user.userId,
-                    //     token: user.token
-                    // }).then(() => {
-                    //     console.log('it went good')
-                    // }).catch((err) => {
-                    //     this.error = true;
-                    //     this.errorMsg = err.message;
-                    // })
-                    // console.log(user)
-                    this.$router.push({ name: 'Home' });
+                     this.$router.push({ name: 'Home' });
                     this.error = false;
                     this.errorMsg = '';
                     console.log('logged in')
@@ -75,24 +63,6 @@ export default {
                     this.errorMsg = err.message;
                 });
         }
-        // signIn() {
-        //     firebase
-        //         .auth().signInWithEmailAndPassword(this.email, this.password)
-        //         .then(() => {
-        //             this.$router.push({ name: "Home" });
-        //             this.error = false;
-        //             this.errorMsg = "";
-        //             // console.log(firebase.auth().currentUser.uid);
-        //         })
-        //         .catch(err => {
-        //             this.error = true;
-        //             this.errorMsg = err.message;
-
-        //         })
-
-
-
-        // }
     }
 
 };

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8080/api';
+const BASE_URL = 'http://localhost:4000/api';
 
 export const API = {
     async userLogIn({ email, password }) {
@@ -8,9 +8,13 @@ export const API = {
             email: email,
             password: password
         }
-        const res = await axios.post(`${BASE_URL}/login`, body);
-        localStorage.setItem('user', JSON.stringify(res.data));
-        console.log(res);
+        try {
+            const res = await axios.post(`${BASE_URL}/login`, body);
+            localStorage.setItem('user', JSON.stringify(res.data));
+            return { state: 'successful', response: res }
+        } catch (err) {
+            return { state: 'error', response: err.response.data }
+        }
     },
     async userRegister({ email, password, firstName, lastName, username }) {
         const body = {
@@ -20,16 +24,20 @@ export const API = {
             lastName: lastName,
             username: username
         }
-        const res = await axios.post(`${BASE_URL}/register`, body);
-        console.log(res)
-        const user = {
-            token: res.data.token,
-            userId: res.data.userId,
-            role: res.data.role
+
+        try {
+            const res = await axios.post(`${BASE_URL}/register`, body);
+            console.log(res)
+            const user = {
+                token: res.data.token,
+                userId: res.data.userId,
+                role: res.data.role
+            }
+            localStorage.setItem('user', JSON.stringify(user));
+            return { state: 'successful', response: res.data }
+        } catch (err) {
+            return { state: 'error', response: err.response.data }
         }
-        localStorage.setItem('user', JSON.stringify(user));
-        console.log(res);
-        return res.data;
     },
     async userPromote({ userId, token }) {
         try {
@@ -40,9 +48,11 @@ export const API = {
                 headers:
                     { authorization: `Bearer ${token}` }
             });
-            console.log(res);
+
+            return { state: 'successful', response: res.data }
         } catch (err) {
-            console.log(err);
+            return { state: 'error', response: err.response.data }
+
         }
     },
     async getUser({ userId, token }) {
@@ -50,8 +60,8 @@ export const API = {
             headers:
                 { authorization: `Bearer ${token}` }
         });
-        console.log(response.data);
         return response.data;
+
     },
     async getUsers({ token }) {
         try {
@@ -76,23 +86,27 @@ export const API = {
         return res.data;
     },
     async blogCreate({ blog, token, userId, username, file }) {
-        console.log(blog);
-        const formData = new FormData();
-        formData.append("title", blog.title);
-        formData.append("dateAdded", new Date(Date.now()));
-        formData.append("textContent", blog.textContent);
-        formData.append("userId", userId);
-        formData.append("username", username);
-        formData.append("image", file);
 
-        const res = await axios.post(`${BASE_URL}/blogs`, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-                authorization: `Bearer ${token}`,
-            },
-        });
+        try {
+            const formData = new FormData();
+            formData.append("title", blog.title);
+            formData.append("dateAdded", new Date(Date.now()));
+            formData.append("textContent", blog.textContent);
+            formData.append("userId", userId);
+            formData.append("username", username);
+            formData.append("image", file);
 
-        return res.data;
+            const res = await axios.post(`${BASE_URL}/blogs`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    authorization: `Bearer ${token}`,
+                },
+            });
+            return { state: 'successful', response: res.data }
+        } catch (err) {
+            return { state: 'error', response: err.response.data }
+        }
+
     },
     async blogGet({ blogId }) {
         const res = await axios.get(`${BASE_URL}/blogs/${blogId}`);
@@ -101,17 +115,18 @@ export const API = {
     async blogUpdate({ blog, token, blogId }) {
         const body = {
             title: blog.title,
-            // dateAdded: new Date(Date.now()),
             textContent: blog.textContent,
-            // userId: userId,
-            // username: username,
             img: null
         }
-        const res = axios.put(`${BASE_URL}/blogs/${blogId}`, body, {
-            headers:
-                { authorization: `Bearer ${token}` }
-        });
-        console.log(res);
+        try {
+            const res = await axios.put(`${BASE_URL}/blogs/${blogId}`, body, {
+                headers:
+                    { authorization: `Bearer ${token}` }
+            });
+            return { state: 'successful', response: res.data }
+        } catch (err) {
+            return { state: 'error', response: err.response.data }
+        }
     },
     async blogDelete({ blogId, token }) {
         try {
@@ -119,6 +134,7 @@ export const API = {
                 headers:
                     { authorization: `Bearer ${token}` }
             });
+
             return res;
         }
         catch { (err) => console.log(err) }
@@ -141,5 +157,6 @@ export const API = {
                 console.log(err)
             }
         }
+
     },
 }
