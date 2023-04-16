@@ -10,6 +10,8 @@ import Admin from "../views/Admin.vue";
 import CreatePost from "../views/CreatePost.vue";
 import BlogPreview from "../views/BlogPreview.vue";
 import ViewBlog from "../views/ViewBlog.vue";
+import Content from "../views/Content.vue"
+import UsersList from "../views/UsersList.vue";
 
 
 
@@ -26,7 +28,7 @@ const routes = [
     component: Home,
     meta: {
       title: "Home",
-    
+
     }
   },
   {
@@ -35,7 +37,7 @@ const routes = [
     component: Blogs,
     meta: {
       title: "Blogs",
-   
+
     }
   },
   {
@@ -102,7 +104,23 @@ const routes = [
       title: "View Blog"
     }
   },
-  
+  {
+    path: "/content",
+    name: "Content",
+    component: Content,
+    meta: {
+      title: "Content"
+    }
+  },
+  {
+    path: "/users",
+    name: "Users",
+    component: UsersList,
+    meta: {
+      title: "Users"
+    }
+  },
+
 ];
 
 const router = new VueRouter({

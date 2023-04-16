@@ -25,7 +25,8 @@ export default new Vuex.Store({
       blogPhotoPreview: null,
     },
     blogPosts: [],
-
+    usersList: [],
+    contentList: [],
     editPost: null,
     isLoggedIn: false,
     user: null,
@@ -52,11 +53,24 @@ export default new Vuex.Store({
       }));
       state.blogPosts = modifiedPayload;
     },
+    populateUsers(state, payload) {
+      state.usersList = payload;
+    },
+    populateContent(state, payload) {
+      const modifiedPayload = payload.map(obj => ({
+        ...obj,
+        dateAdded: obj.dateAdded.slice(0, 10)
+      }));
+      state.contentList = modifiedPayload;
+    },
     newBlogPost(state, payload) {
       state.selectedBlog.blogHTML = payload;
     },
     updateBlogTitle(state, payload) {
       state.selectedBlog.blogTitle = payload;
+    },
+    promoteToAdmin(state, payload) {
+      state.usersList = state.usersList.filter(user => user.id !== payload.userId);
     },
     fileNameChange(state, payload) {
       state.selectedBlog.blogPhotoName = payload;
@@ -112,6 +126,10 @@ export default new Vuex.Store({
   },
 
   actions: {
+    async GetBlogs({ commit }) {
+      const res = await API.blogList();
+      commit("addBlogs", res);
+    },
     async CreateBlog({ commit }, payload) {
       console.log(commit)
       try {
@@ -119,9 +137,9 @@ export default new Vuex.Store({
         console.log(res)
       } catch { (err) => console.log(err) }
     },
-    async GetBlogs({ commit }) {
-      const res = await API.blogList();
-      commit("addBlogs", res);
+    async GetContent({ commit }, payload) {
+      const res = await API.trackerList(payload);
+      commit("populateContent", res)
     },
     async RegisterUser({ commit }, payload) {
       const res = await API.userRegister(payload)
@@ -138,6 +156,27 @@ export default new Vuex.Store({
         token: payload.token
       })
       commit("setProfileInfo", user);
+      commit("setProfileInitials");
+    },
+    async PromoteUser({ commit }, payload) {
+      try {
+        const res = await API.userPromote({
+          userId: payload.userId,
+          token: payload.token
+        });
+        commit("promoteToAdmin", payload)
+        console.log(res);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    async GetUsers({ commit }, payload) {
+      try {
+        const users = await API.getUsers(payload.token);
+        commit("populateUsers", users)
+      } catch (err) {
+        console.log(err);
+      }
     },
     async getCurrentUser({ commit }) {
       const dataBase = await firebaseDB.collection("users").doc(firebase.auth().currentUser.uid);

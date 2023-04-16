@@ -40,11 +40,6 @@ app.use('/api/tracker', trackerRoute);
 app.use('/api/blogs', blogRoute);
 app.use('/api', userRoute);
 
-app.listen(
-  port,
-  () => console.log(`server running on http://localhost:${port}`)
-);
-
 app.use((req, res, next) => {
   next(createError(404))
 })
@@ -55,4 +50,11 @@ app.use((err, req, res) => {
   if (!err.statusCode) err.statusCode = 500
   res.status(err.statusCode).send(err.message)
 })
+
+app.listen(
+  port,
+  () => console.log(`server running on http://localhost:${port}`)
+);
+
+
 

@@ -51,7 +51,7 @@ export default {
     methods: {
         ...mapActions(['LogInUser']),
         signIn() {
-            this.LogInUser({ email: this.email, password: this.password })
+            this.LogInUser({ email: this.email.trim(), password: this.password })
                 .then(() => {
                     // const userString = localStorage.getItem('user');
                     // const user = JSON.parse(userString);

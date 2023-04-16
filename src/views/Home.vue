@@ -11,8 +11,7 @@
         </div>
       </div>
     </div>
-    <button @click.prevent="signIn">login</button>
-     <div v-if="!user" class="updates">
+     <div v-if="!isLoggedIn" class="updates">
         <div class="container">
           <h4>Never miss a post - Create your account for free. TECHBLOGS!</h4>
           <router-link class="router-button" :to="{name: 'Login'}"> Register TechBlogs <Arrow class="arrow arrow-light"/></router-link>
@@ -73,11 +72,17 @@ export default {
     },
     computed: {
       sampleBlogCards() { 
-      return this.$store.state.sampleBlogCards;
+        return this.$store.state.blogPosts.slice(0,4);
+      },
+      isLoggedIn() {
+            return this.$store.state.isLoggedIn;
       },
       user(){
             return this.$store.state.user;
         },  
+    },
+    created(){
+      this.$store.dispatch("GetBlogs")
     },
   
 };

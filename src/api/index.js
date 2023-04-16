@@ -25,21 +25,25 @@ export const API = {
         const user = {
             token: res.data.token,
             userId: res.data.userId,
-            role:res.data.role
+            role: res.data.role
         }
         localStorage.setItem('user', JSON.stringify(user));
         console.log(res);
         return res.data;
     },
     async userPromote({ userId, token }) {
-        const body = {
-            userId: userId
+        try {
+            const body = {
+                userId: userId
+            }
+            const res = await axios.post(`${BASE_URL}/promote`, body, {
+                headers:
+                    { authorization: `Bearer ${token}` }
+            });
+            console.log(res);
+        } catch (err) {
+            console.log(err);
         }
-        const res = await axios.post(`${BASE_URL}/promote`, body, {
-            headers:
-                { authorization: `Bearer ${token}` }
-        });
-        console.log(res);
     },
     async getUser({ userId, token }) {
         const response = await axios.get(`${BASE_URL}/${userId}`, {
@@ -48,6 +52,24 @@ export const API = {
         });
         console.log(response.data);
         return response.data;
+    },
+    async getUsers({ token }) {
+        try {
+            const res = await axios.get(`${BASE_URL}/users`, {
+                headers:
+                    { authorization: `Bearer ${token}` }
+            });
+            return res.data.map(user => ({
+                id: user.id,
+                firstName: user.firstName,
+                email: user.email,
+                lastName: user.lastName,
+                role: user.role,
+                username: user.username
+            }));
+        } catch (err) {
+            return err.message
+        }
     },
     async blogList() {
         const res = await axios.get(`${BASE_URL}/blogs`);
@@ -62,14 +84,14 @@ export const API = {
         formData.append("userId", userId);
         formData.append("username", username);
         formData.append("image", file);
-    
+
         const res = await axios.post(`${BASE_URL}/blogs`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
                 authorization: `Bearer ${token}`,
             },
         });
-    
+
         return res.data;
     },
     async blogGet({ blogId }) {
@@ -92,17 +114,32 @@ export const API = {
         console.log(res);
     },
     async blogDelete({ blogId, token }) {
-        const res = await axios.delete(`${BASE_URL}/blogs/${blogId}`, {
-            headers:
-                { authorization: `Bearer ${token}` }
-        });
-        console.log(res);
+        try {
+            const res = await axios.delete(`${BASE_URL}/blogs/${blogId}`, {
+                headers:
+                    { authorization: `Bearer ${token}` }
+            });
+            return res;
+        }
+        catch { (err) => console.log(err) }
     },
     async trackerList({ token }) {
-        const res = await axios.get(`${BASE_URL}/tracker`, {
-            headers:
-                { authorization: `Bearer ${token}` }
-        });
-        console.log(res);
+        try {
+            const res = await axios.get(`${BASE_URL}/tracker`, {
+                headers:
+                    { authorization: `Bearer ${token}` }
+            });
+            console.log(res)
+            return res.data.map((data) => ({
+                userId: data.userId,
+                operationType: data.operationType,
+                dateAdded: data.dateAdded,
+                entityType: data.entityType
+            }));
+        } catch {
+            (err) => {
+                console.log(err)
+            }
+        }
     },
 }
