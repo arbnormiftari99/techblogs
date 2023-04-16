@@ -127,8 +127,11 @@ export default {
             return this.$store.state.isLoggedIn;
         },
         isAdmin(){
-            const user = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):undefined;
-            return user?user.role === 'ADMIN':false
+            if(this.$store.state.isLoggedIn){
+                const user = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):undefined;
+                return user?user.role === 'ADMIN':false
+            }
+            return false;
         }
     }
 };
