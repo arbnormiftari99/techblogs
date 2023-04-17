@@ -5,6 +5,10 @@
     <BlogPost :post="post" v-for="(post, index) in sampleBlogPost" :key="index" />
     <div class="blog-card-wrap">
       <div class="container">
+        <h3>View more recent Blogs</h3>
+        <div class="blog-cards">
+          <BlogCard :post="post" v-for="(post, index) in sampleBlogCards" :key="index"/>
+        </div>
       </div>
     </div>
 
@@ -23,13 +27,14 @@
 
 
 import BlogPost from "../components/BlogPost";
+import BlogCard from "../components/BlogCard.vue";
 import Arrow from '../assets/Icons/arrow-right-light.svg';
 import { API } from '../api/index.js';
 
 
 export default {
   name: 'Home',
-  components: { BlogPost, Arrow },
+  components: { BlogPost, Arrow, BlogCard },
 
 
   data() {
