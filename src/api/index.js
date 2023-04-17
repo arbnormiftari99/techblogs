@@ -63,11 +63,11 @@ export const API = {
         return response.data;
 
     },
-    async getUsers({ token }) {
+    async getUsers(payload) {
         try {
             const res = await axios.get(`${BASE_URL}/users`, {
                 headers:
-                    { authorization: `Bearer ${token}` }
+                    { authorization: `Bearer ${payload.token}` }
             });
             return res.data.map(user => ({
                 id: user.id,

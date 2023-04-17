@@ -31,7 +31,8 @@ export default {
     created() {
         const userString = localStorage.getItem('user');
         const user = JSON.parse(userString);
-        if(user){this.$store.dispatch("GetContent", user.token)}
+        console.log(user);
+        if(user){this.$store.dispatch("GetContent", {token:user.token})}
     }
 }
 </script>

@@ -60,7 +60,7 @@ userRoute.route('/register').post(
         }
     })
 
-userRoute.route('/users').get(async (req, res, next) => {
+userRoute.route('/users').get(checkIfAdmin, async (req, res, next) => {
     try {
         const userInfo = db.collection("users");
         const response = await userInfo.get();

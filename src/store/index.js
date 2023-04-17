@@ -189,7 +189,7 @@ export default new Vuex.Store({
     },
     async GetUsers({ commit }, payload) {
       try {
-        const users = await API.getUsers(payload.token);
+        const users = await API.getUsers(payload);
         commit("populateUsers", users)
       } catch (err) {
         console.log(err);
