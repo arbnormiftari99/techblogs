@@ -13,6 +13,7 @@ blogRoute.route('/').get(async (req, res, next) => {
         await BlogModel.find((error, data) => {
             if (error) {
                 return next(error)
+                
             } else {
                 res.json(data)
             }
@@ -54,6 +55,7 @@ blogRoute.route('/:id').get(async (req, res, next) => {
             return next(error)
         } else {
             res.json(data)
+            res.status(200)
         }
     })
 })

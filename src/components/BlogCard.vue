@@ -4,7 +4,7 @@
             <div class="icon">
                 <Edit class="edit" />
             </div>
-            <div class="icon">
+            <div class="icon" @click="handleDelete">
                 <Delete class="delete" />
             </div>
         </div>
@@ -25,10 +25,15 @@
 import Arrow from '../assets/Icons/arrow-right-light.svg';
 import Edit from '../assets/Icons/edit-regular.svg';
 import Delete from '../assets/Icons/trash-regular.svg';
+// import { blogDelete } from '../api/index.js';
+
+// import axios from 'axios';
 
 export default {
     name: "blogCard",
     props: ['post'],
+   
+    
     components: {
         Arrow, Edit, Delete
     },
@@ -46,6 +51,32 @@ export default {
 
         }
     },
+
+    methods: {
+        async handleDelete() {
+      try {
+        const userString = localStorage.getItem('user');
+        const user = JSON.parse(userString);
+        if(user){
+            const confirmed = window.confirm('Are you sure you want to delete this blog post?');
+            if(confirmed){
+                await this.$store.dispatch("DeleteBlog", {blogId:this.post._id,token: user.token})
+                this.$store.dispatch("GetBlogs");
+            }
+        }
+    } catch (err) {
+        console.error(err);
+        // handle any error that occurred during the request
+      }
+    },
+    checkifAdmin(){
+
+          
+
+    },
+  },
+
+
     computed: {
         editPost() {
             return this.$store.state.editPost;
@@ -53,17 +84,19 @@ export default {
     }
 
 }
+
 </script>
 
 <style lang="scss">
 .blog-card {
+    height: 350px;
     position: relative;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     border-radius: 8px;
     background-color: #fff;
-    min-height: 420px;
+    min-height: 300px;
     transition: 0.5s ease all;
 
     &:hover {

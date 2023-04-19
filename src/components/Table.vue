@@ -9,7 +9,7 @@
             <tbody>
                 <tr v-for="(row, rowIndex) in mappedRows" :key="rowIndex">
                     <td v-for="(cell, cellIndex) in row" :key="cellIndex">{{ cell }}</td>
-                    <button v-if="showButton" @click="promote(row)">hi</button>
+                    <button v-if="showButton" @click="promote(row)">Make it Admin</button>
                 </tr>
             </tbody>
         </table>

@@ -92,6 +92,7 @@ export default new Vuex.Store({
     openPhotoPreview(state) {
       state.selectedBlog.blogPhotoPreview = !state.blogPhotoPreview;
     },
+   
     //
     setLoggedIn(state, payload) {
       const userData = JSON.parse(localStorage.getItem('user'));
@@ -187,6 +188,28 @@ export default new Vuex.Store({
         console.log(err);
       }
     },
+
+
+    async DeleteBlog({ commit}, payload){
+      try {
+        const res = await API.blogDelete({
+          blogId: payload.blogId,
+          token: payload.token,
+        })
+        console.log(commit)
+        console.log(res);
+        
+        // commit("blogDelete", res);
+      } catch (error) {
+        console.log(error);
+      
+        
+      }
+    },
+
+
+
+
     async GetUsers({ commit }, payload) {
       try {
         const users = await API.getUsers(payload);

@@ -10,7 +10,7 @@
                 <input type="text" placeholder="Enter Blog Title" v-model="blogTitle">
                 <div class="upload-file">
                     <label for="blog-photo">Upload Cover Photo</label>
-                    <input type="file" ref="blogPhoto" id="blog-photo" @change="fileChange" accept=".png, .jpg, .jpeg" />
+                    <input  class="image" type="file" ref="blogPhoto" id="blog-photo" @change="fileChange" accept=".png, .jpg, .jpeg" />
                     <button @click="openPreview" class="preview"
                         :class="{ 'button-inactive': !this.$store.state.selectedBlog.blogPhotoFileURL }">
                         Preview Photo
@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div class="editor">
-                hello
+                
                 <vue-editor :editorOptions="editorOptions" v-model="blogHTMLData" useCustomImageHandler />
             </div>
             <div class="blog-actions">
@@ -137,9 +137,14 @@ export default {
                 }
                 console.log(payload)
                 this.$store.dispatch("CreateBlog", payload)
-                this.$router.push({ name: "Home" });
+                this.$router.push({ name: "Blogs" });
+                this.$store.dispatch("GetBlogs")
+
+  
+                
             }
         },
+ 
         created() {
             // Initialize the data property with the value from the computed property
             this.blogHTMLData = this.blogHTML;
@@ -160,6 +165,11 @@ export default {
 </script>
 
 <style lang="scss">
+.image{
+    max-width: 400px;
+    max-height: 400px;
+}
+
  .modal {
         position: fixed;
         top: 0;
@@ -328,6 +338,7 @@ export default {
             margin-right: 16px;
         }
     }
+
 
 }
 </style>

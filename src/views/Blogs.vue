@@ -1,8 +1,8 @@
 <template>
   <div class="blog-card-wrap">
     <div class="blog-cards container">
-      <div class="toggle-edit">
-        <span>Toggle editing Post</span>
+      <div class="toggle-edit" v-if="isAdmin">
+        <span>Toggle editing/deleting Post</span>
         <input type="checkbox" v-model="editPost">
       </div>
       <BlogCard :post="post" v-for="(post, index) in blogPosts" :key="index" />
@@ -40,6 +40,13 @@ export default {
         this.$store.commit("toggleEditPost", payload);
       },
     },
+    isAdmin(){
+            if(this.$store.state.isLoggedIn){
+                const user = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):undefined;
+                return user?user.role === 'ADMIN':false
+            }
+            return false;
+        }
   },
   beforeDestroy() {
     this.$store.commit("toggleEditPost", false);
