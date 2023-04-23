@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:4000/api';
-
+const BASE_URL = 'http://localhost:8080/api';
+//endpoint i backend
 export const API = {
     async userLogIn({ email, password }) {
         const body = {
-            email: email,
-            password: password
+            email: email.trim(),
+            password: password.trim()
         }
         try {
             const res = await axios.post(`${BASE_URL}/login`, body);
