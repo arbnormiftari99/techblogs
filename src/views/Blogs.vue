@@ -6,6 +6,12 @@
         <input type="checkbox" v-model="editPost">
       </div>
       <BlogCard :post="post" v-for="(post, index) in blogPosts" :key="index" />
+      <Modal :is-open="this.isModalOpen" @update:is-open="isModalOpen = $event">
+        <h2>Hello, World!</h2>
+        <p>This is some sample content for the modal.</p>
+        <button @click="closeModal">Close Modal</button>
+      </Modal>
+      <button @click="openModal">Open Modal</button>
     </div>
   </div>
   
@@ -13,12 +19,26 @@
 
 <script>
 import BlogCard from '../components/BlogCard.vue';
+import Modal from '../components/EditBlog.vue'
 // import { API } from '../api';
 export default {
   name: 'blogs',
-  components: { BlogCard },
+  components: { BlogCard, Modal },
   created(){
       this.$store.dispatch("GetBlogs")
+  },
+  data() {
+    return {
+      isModalOpen: false,
+    };
+  },
+  methods:{
+    openModal() {
+      this.isModalOpen = true;
+    },
+    closeModal() {
+      this.isModalOpen = false;
+    },
   },
   // methods:{
   //   getList(){
