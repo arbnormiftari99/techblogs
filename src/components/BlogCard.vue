@@ -1,7 +1,7 @@
 <template>
     <div class="blog-card">
         <div v-show="editPost" class="icons">
-            <div class="icon">
+            <div class="icon" @click="handleEdit">
                 <Edit class="edit" />
             </div>
             <div class="icon" @click="handleDelete">
@@ -32,8 +32,8 @@ import Delete from '../assets/Icons/trash-regular.svg';
 export default {
     name: "blogCard",
     props: ['post'],
-   
-    
+
+
     components: {
         Arrow, Edit, Delete
     },
@@ -54,27 +54,41 @@ export default {
 
     methods: {
         async handleDelete() {
-      try {
-        const userString = localStorage.getItem('user');
-        const user = JSON.parse(userString);
-        if(user){
-            const confirmed = window.confirm('Are you sure you want to delete this blog post?');
-            if(confirmed){
-                await this.$store.dispatch("DeleteBlog", {blogId:this.post._id,token: user.token})
-                this.$store.dispatch("GetBlogs");
+            try {
+                const userString = localStorage.getItem('user');
+                const user = JSON.parse(userString);
+                if (user) {
+                    const confirmed = window.confirm('Are you sure you want to delete this blog post?');
+                    if (confirmed) {
+                        await this.$store.dispatch("DeleteBlog", { blogId: this.post._id, token: user.token })
+                        this.$store.dispatch("GetBlogs");
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                // handle any error that occurred during the request
             }
-        }
-    } catch (err) {
-        console.error(err);
-        // handle any error that occurred during the request
-      }
-    },
-    checkifAdmin(){
+        },
+        handleEdit() {
+            // try {
+            //     const userString = localStorage.getItem('user');
+            //     const user = JSON.parse(userString);
+            //     if (user) {
+            //         this.$store.dispatch("DeleteBlog", { blogId: this.post._id, token: user.token })
+            //         this.$store.dispatch("GetBlogs");
+            //     }
+            // } catch (err) {
+            //     console.error(err);
+            //     // handle any error that occurred during the request
+            // }
+            this.$router.push
+        },
+        checkifAdmin() {
 
-          
 
+
+        },
     },
-  },
 
 
     computed: {
